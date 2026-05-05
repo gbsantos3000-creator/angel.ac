@@ -1,35 +1,80 @@
 export default function Home() {
   return (
     <div style={{
-      background: "#0a0a0a",
-      color: "#fff",
       height: "100vh",
+      margin: 0,
+      background: "radial-gradient(circle at top, #111 0%, #000 80%)",
+      color: "#fff",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      fontFamily: "Arial"
+      fontFamily: "Arial, sans-serif",
+      overflow: "hidden"
     }}>
-      <h1 style={{ fontSize: "56px", marginBottom: "10px" }}>
+
+      {/* glow background */}
+      <div style={{
+        position: "absolute",
+        width: "600px",
+        height: "600px",
+        background: "rgba(37,99,235,0.3)",
+        filter: "blur(120px)",
+        borderRadius: "50%",
+        top: "-100px",
+        animation: "pulse 6s infinite alternate"
+      }} />
+
+      {/* título */}
+      <h1 style={{
+        fontSize: "64px",
+        letterSpacing: "2px",
+        marginBottom: "10px",
+        zIndex: 2
+      }}>
         ANGEL A.C
       </h1>
 
-      <p style={{ opacity: 0.7 }}>
-        Advanced Anti-Cheat Platform
+      {/* subtítulo */}
+      <p style={{
+        opacity: 0.6,
+        fontSize: "18px",
+        zIndex: 2
+      }}>
+        Advanced Anti-Cheat System
       </p>
 
+      {/* botão */}
       <button style={{
-        marginTop: 30,
-        padding: "14px 28px",
-        background: "#2563eb",
-        border: "none",
-        borderRadius: "8px",
-        color: "#fff",
+        marginTop: "40px",
+        padding: "16px 40px",
         fontSize: "16px",
-        cursor: "pointer"
-      }}>
+        background: "linear-gradient(90deg, #2563eb, #1e40af)",
+        border: "none",
+        borderRadius: "10px",
+        color: "#fff",
+        cursor: "pointer",
+        zIndex: 2,
+        transition: "0.3s",
+        boxShadow: "0 0 20px rgba(37,99,235,0.6)"
+      }}
+      onMouseEnter={e => e.target.style.transform = "scale(1.05)"}
+      onMouseLeave={e => e.target.style.transform = "scale(1)"}
+      >
         Download Scanner
       </button>
+
+      {/* animação */}
+      <style jsx>{`
+        @keyframes pulse {
+          from {
+            transform: scale(1);
+          }
+          to {
+            transform: scale(1.3);
+          }
+        }
+      `}</style>
     </div>
   );
 }
