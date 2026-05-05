@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "radial-gradient(circle at top, #0f172a, #000)",
+      background: "radial-gradient(circle at top, #111 0%, #000 80%)",
       color: "#fff",
       fontFamily: "Arial, sans-serif"
     }}>
@@ -42,14 +42,13 @@ export default function Home() {
         textAlign: "center"
       }}>
 
-        {/* glow */}
+        {/* GLOW */}
         <div style={{
           position: "absolute",
           width: "500px",
           height: "500px",
-          background: "#2563eb",
+          background: "rgba(37,99,235,0.25)",
           filter: "blur(150px)",
-          opacity: 0.3,
           borderRadius: "50%",
           animation: "pulse 6s infinite alternate"
         }} />
@@ -69,7 +68,7 @@ export default function Home() {
           Advanced Anti-Cheat Platform
         </p>
 
-        {/* botão */}
+        {/* BOTÃO */}
         <button style={{
           marginTop: 40,
           padding: "16px 40px",
@@ -80,7 +79,7 @@ export default function Home() {
           color: "#fff",
           cursor: "pointer",
           zIndex: 2,
-          boxShadow: "0 0 25px rgba(37,99,235,0.7)",
+          boxShadow: "0 0 40px rgba(37,99,235,0.5)",
           transition: "0.3s"
         }}
         onMouseEnter={e => e.target.style.transform = "scale(1.08)"}
@@ -91,7 +90,7 @@ export default function Home() {
 
       </div>
 
-      {/* animação */}
+      {/* ANIMAÇÃO */}
       <style jsx>{`
         @keyframes pulse {
           from { transform: scale(1); }
