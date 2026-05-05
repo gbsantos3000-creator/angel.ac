@@ -6,100 +6,55 @@ export default function Home() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "radial-gradient(circle at top, #111 0%, #000 80%)",
+      background: "radial-gradient(circle at center, #0f172a, #000)",
       color: "#fff",
-      fontFamily: "Arial, sans-serif"
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center"
     }}>
 
-      {/* NAVBAR */}
-      <div style={{
-        position: "fixed",
-        top: 0,
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "20px 40px",
-        background: "rgba(0,0,0,0.4)",
-        backdropFilter: "blur(10px)"
-      }}>
-        <h2>ANGEL A.C</h2>
+      <h1 style={{fontSize: "60px"}}>ANGEL A.C</h1>
+      <p style={{opacity: 0.6}}>Advanced Anti-Cheat for FiveM</p>
 
-        {!session ? (
-          <button onClick={() => signIn("discord")} style={btn}>
-            Login Discord
-          </button>
-        ) : (
-          <div>
-            <span>{session.user.email} ({session.user.role})</span>
+      {!session ? (
+        <button onClick={() => signIn("discord")} style={btn}>
+          Login com Discord
+        </button>
+      ) : (
+        <>
+          <p>{session.user.email}</p>
+          <p>Role: {session.user.role}</p>
 
-            <button onClick={() => signOut()} style={btn}>
-              Logout
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* HERO */}
-      <div style={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center"
-      }}>
-
-        <div style={{
-          position: "absolute",
-          width: "500px",
-          height: "500px",
-          background: "rgba(37,99,235,0.25)",
-          filter: "blur(150px)",
-          borderRadius: "50%",
-          animation: "pulse 6s infinite alternate"
-        }} />
-
-        <h1 style={{ fontSize: "64px" }}>ANGEL A.C</h1>
-
-        <p style={{ opacity: 0.6 }}>
-          Advanced Anti Cheat for FiveM
-        </p>
-
-        {session && (
           <a href="/api/download">
-            <button style={mainBtn}>
+            <button style={btn}>
               Download Scanner
             </button>
           </a>
-        )}
 
-      </div>
+          {session.user.role === "owner" && (
+            <a href="/admin">
+              <button style={btn}>
+                Painel Admin
+              </button>
+            </a>
+          )}
 
-      <style jsx>{`
-        @keyframes pulse {
-          from { transform: scale(1); }
-          to { transform: scale(1.3); }
-        }
-      `}</style>
-
+          <button onClick={() => signOut()} style={btn}>
+            Logout
+          </button>
+        </>
+      )}
     </div>
   );
 }
 
 const btn = {
-  marginLeft: "10px",
-  padding: "8px 16px",
-  border: "1px solid #2563eb",
-  background: "transparent",
-  color: "#fff",
-  cursor: "pointer"
-};
-
-const mainBtn = {
-  marginTop: 40,
-  padding: "16px 40px",
+  marginTop: 20,
+  padding: "12px 30px",
   background: "#2563eb",
   border: "none",
   color: "#fff",
-  borderRadius: "10px",
+  borderRadius: "8px",
   cursor: "pointer"
 };
