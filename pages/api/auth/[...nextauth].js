@@ -1,28 +1,20 @@
-import NextAuth from "next-auth"
-import DiscordProvider from "next-auth/providers/discord"
+// app/api/auth/[...nextauth]/route.ts
 
-export const authOptions = {
+import NextAuth from "next-auth";
+import DiscordProvider from "next-auth/providers/discord";
+
+const handler = NextAuth({
   providers: [
     DiscordProvider({
-      clientId: process.env.DISCORD_CLIENT_ID,
-      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+      clientId: process.env.DISCORD_CLIENT_ID!,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
 
-  callbacks: {
-    async session({ session, token }) {
-
-      session.user.id = token.sub
-
-      // PLANOS
-
-      session.user.plan = "Lifetime"
-
-      session.user.expire = "Never expires"
-
-      return session
-    },
+  pages: {
+    signIn: "/",
   },
-}
+});
 
-export default NextAuth(authOptions)
+export { handler as GET, handler as POST };
