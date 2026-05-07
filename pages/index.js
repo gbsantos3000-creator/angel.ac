@@ -13,7 +13,7 @@ export default function Home() {
 
           <p>Advanced Anti-Cheat Platform</p>
 
-          <a href="/api/auth/discord">
+          import { useSession, signIn } from "next-auth/react"
             <button>Login with Discord</button>
           </a>
         </div>
