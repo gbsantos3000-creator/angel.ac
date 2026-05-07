@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+\import NextAuth from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 
 export default NextAuth({
@@ -9,4 +9,7 @@ export default NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/",
+  },
 });
