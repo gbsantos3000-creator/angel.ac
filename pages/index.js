@@ -1,197 +1,294 @@
-// ===============================
-// pages/index.js
-// ===============================
-
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
 
 export default function Home() {
+
   const { data: session } = useSession()
 
+  // =========================
+  // TELA LOGIN
+  // =========================
+  if (!session) {
+    return (
+      <div className="loginPage">
+
+        <div className="goldGlow"></div>
+
+        <div className="loginBox">
+
+          <h1>ANGEL A.C</h1>
+
+          <p>
+            Advanced Anti-Cheat Platform
+          </p>
+
+          <button
+            onClick={() => signIn("discord")}
+          >
+            Login with Discord
+          </button>
+
+        </div>
+
+        <style jsx>{`
+
+          .loginPage{
+            width:100%;
+            height:100vh;
+            background:#050505;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            overflow:hidden;
+            position:relative;
+            font-family:Arial;
+          }
+
+          .goldGlow{
+            position:absolute;
+            width:700px;
+            height:700px;
+            background:
+              radial-gradient(circle,
+              rgba(212,175,55,0.18),
+              transparent);
+
+            filter:blur(20px);
+          }
+
+          .loginBox{
+            position:relative;
+            z-index:2;
+
+            width:420px;
+
+            background:
+              rgba(10,10,10,0.95);
+
+            border:
+              1px solid rgba(212,175,55,0.15);
+
+            border-radius:30px;
+
+            padding:60px;
+
+            text-align:center;
+
+            backdrop-filter:blur(20px);
+
+            box-shadow:
+              0 0 40px rgba(212,175,55,0.08);
+          }
+
+          h1{
+            color:#d4af37;
+            font-size:56px;
+            margin:0;
+            font-weight:900;
+            letter-spacing:3px;
+          }
+
+          p{
+            color:#777;
+            margin-top:15px;
+            margin-bottom:40px;
+            font-size:16px;
+          }
+
+          button{
+            width:100%;
+            padding:18px;
+
+            background:
+              linear-gradient(
+                90deg,
+                #8b6b15,
+                #d4af37
+              );
+
+            border:none;
+
+            border-radius:16px;
+
+            color:black;
+
+            font-size:18px;
+            font-weight:800;
+
+            cursor:pointer;
+
+            transition:0.3s;
+          }
+
+          button:hover{
+            transform:scale(1.03);
+
+            box-shadow:
+              0 0 30px rgba(212,175,55,0.2);
+          }
+
+        `}</style>
+
+      </div>
+    )
+  }
+
+  // =========================
+  // DASHBOARD
+  // =========================
   return (
     <div className="container">
 
-      {/* FUNDO PREMIUM */}
-      <div className="backgroundGlow"></div>
-
-      {/* SIDEBAR */}
       <div className="sidebar">
 
         <div>
+
           <h1 className="logo">
             ANGEL A.C
           </h1>
 
-          <p className="logoSub">
-            SCANNER
+          <p className="sub">
+            SECURITY
           </p>
-        </div>
 
-        <div className="menu">
+          <div className="menu">
 
-          <button className="menuItem active">
-            Dashboard
-          </button>
+            <button className="active">
+              Dashboard
+            </button>
 
-          <button className="menuItem">
-            Scan
-          </button>
+            <button>
+              Scan
+            </button>
 
-          <button className="menuItem">
-            Logs
-          </button>
+            <button>
+              Logs
+            </button>
 
-          <button className="menuItem">
-            Quarantine
-          </button>
+            <button>
+              Quarantine
+            </button>
 
-          <button className="menuItem">
-            Settings
-          </button>
-
-        </div>
-
-        {session && (
-          <div className="userCard">
-
-            <img
-              src={session.user.image}
-              className="avatar"
-            />
-
-            <div>
-              <h3>{session.user.name}</h3>
-
-              <p>
-                {session.user.plan || "Lifetime"}
-              </p>
-
-              <span>
-                {session.user.expire || "Never expires"}
-              </span>
-            </div>
-
-          </div>
-        )}
-
-      </div>
-
-      {/* CONTEÚDO */}
-      <div className="content">
-
-        {/* TOPO */}
-        <div className="topBar">
-
-          <div>
-            <h1 className="mainTitle">
-              ANGEL A.C
-            </h1>
-
-            <p className="welcome">
-              WELCOME BACK
-            </p>
-
-            <h2 className="username">
-              {session?.user?.name || "Operator"}
-            </h2>
-
-            <div className="license">
-              {session?.user?.plan || "Lifetime License"}
-            </div>
-          </div>
-
-          {/* PERFIL */}
-          {session && (
-            <div className="profileBox">
-
-              <img
-                src={session.user.image}
-                className="profilePic"
-              />
-
-              <div>
-                <p className="logged">
-                  Logged with Discord
-                </p>
-
-                <span className="discordName">
-                  @{session.user.name}
-                </span>
-              </div>
-
-            </div>
-          )}
-
-        </div>
-
-        {/* LOGIN */}
-        {!session && (
-          <div className="loginBox">
-
-            <button
-              className="discordBtn"
-              onClick={() => signIn("discord")}
-            >
-              Login with Discord
+            <button>
+              Settings
             </button>
 
           </div>
-        )}
 
-        {/* DASHBOARD */}
-        {session && (
-          <>
+        </div>
 
-            <div className="cards">
+        <div className="profile">
 
-              <div className="card">
-                <h3>Status</h3>
-                <p>Protected</p>
-              </div>
+          <img
+            src={session.user.image}
+          />
 
-              <div className="card">
-                <h3>Threats Blocked</h3>
-                <p>0</p>
-              </div>
+          <div>
 
-              <div className="card">
-                <h3>Plan</h3>
-                <p>{session.user.plan}</p>
-              </div>
+            <h3>
+              {session.user.name}
+            </h3>
 
-              <div className="card">
-                <h3>Expires</h3>
-                <p>{session.user.expire}</p>
-              </div>
+            <p>
+              Lifetime
+            </p>
 
-            </div>
+            <span>
+              Never expires
+            </span>
 
-            {/* SCANNER */}
-            <div className="scannerBox">
+          </div>
 
-              <h2>
-                Advanced Anti-Cheat Scanner
-              </h2>
-
-              <p>
-                Real-time protection enabled
-              </p>
-
-              <div className="scanBar">
-                <div className="scanProgress"></div>
-              </div>
-
-              <button className="scanButton">
-                START SCAN
-              </button>
-
-            </div>
-
-          </>
-        )}
+        </div>
 
       </div>
 
-      {/* CSS */}
+      {/* MAIN */}
+      <div className="main">
+
+        <div className="top">
+
+          <div>
+
+            <h1>
+              WELCOME BACK
+            </h1>
+
+            <h2>
+              {session.user.name}
+            </h2>
+
+          </div>
+
+          <div className="userBox">
+
+            <img
+              src={session.user.image}
+            />
+
+            <div>
+
+              <p>
+                Logged with Discord
+              </p>
+
+              <span>
+                @{session.user.name}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* CARDS */}
+        <div className="cards">
+
+          <div className="card">
+            <h3>Scanner</h3>
+            <p>Online</p>
+          </div>
+
+          <div className="card">
+            <h3>Protection</h3>
+            <p>Enabled</p>
+          </div>
+
+          <div className="card">
+            <h3>Plan</h3>
+            <p>Lifetime</p>
+          </div>
+
+          <div className="card">
+            <h3>Status</h3>
+            <p>Secure</p>
+          </div>
+
+        </div>
+
+        {/* SCANNER */}
+        <div className="scanner">
+
+          <h1>
+            Advanced Anti-Cheat Scanner
+          </h1>
+
+          <p>
+            Real-time protection enabled
+          </p>
+
+          <div className="bar">
+            <div className="progress"></div>
+          </div>
+
+          <button>
+            DOWNLOAD SCANNER
+          </button>
+
+        </div>
+
+      </div>
+
       <style jsx>{`
 
         *{
@@ -201,38 +298,27 @@ export default function Home() {
           font-family:Arial;
         }
 
-        body{
-          background:black;
-        }
-
         .container{
           width:100%;
           min-height:100vh;
           display:flex;
           background:#050505;
           color:white;
-          overflow:hidden;
         }
 
-        .backgroundGlow{
-          position:fixed;
-          width:900px;
-          height:900px;
-          background:radial-gradient(circle, rgba(212,175,55,0.12), transparent);
-          top:-300px;
-          right:-300px;
-          z-index:0;
-        }
+        /* SIDEBAR */
 
         .sidebar{
-          width:260px;
+          width:270px;
           background:#090909;
-          border-right:1px solid rgba(212,175,55,0.1);
+          border-right:
+            1px solid rgba(212,175,55,0.08);
+
           padding:30px;
+
           display:flex;
           flex-direction:column;
           justify-content:space-between;
-          z-index:2;
         }
 
         .logo{
@@ -241,244 +327,256 @@ export default function Home() {
           font-weight:900;
         }
 
-        .logoSub{
-          color:#777;
-          letter-spacing:5px;
-          margin-top:10px;
+        .sub{
+          color:#666;
+          margin-top:8px;
+          letter-spacing:4px;
         }
 
         .menu{
+          margin-top:50px;
+
           display:flex;
           flex-direction:column;
           gap:14px;
-          margin-top:50px;
         }
 
-        .menuItem{
+        .menu button{
           background:transparent;
           border:none;
-          color:#999;
+          color:#888;
+
           text-align:left;
+
           padding:16px;
+
           border-radius:14px;
+
           cursor:pointer;
-          font-size:16px;
+
           transition:0.3s;
         }
 
-        .menuItem:hover{
-          background:rgba(212,175,55,0.08);
-          color:#d4af37;
-        }
-
+        .menu button:hover,
         .active{
-          background:rgba(212,175,55,0.1);
+          background:
+            rgba(212,175,55,0.08);
+
           color:#d4af37;
-          border:1px solid rgba(212,175,55,0.2);
         }
 
-        .content{
-          flex:1;
-          padding:40px;
-          position:relative;
-          z-index:2;
-        }
+        /* PROFILE */
 
-        .topBar{
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-          margin-bottom:40px;
-        }
+        .profile{
+          background:#0b0b0b;
 
-        .mainTitle{
-          font-size:60px;
-          color:#d4af37;
-          font-weight:900;
-        }
+          border:
+            1px solid rgba(212,175,55,0.1);
 
-        .welcome{
-          color:#777;
-          margin-top:10px;
-          letter-spacing:3px;
-        }
+          border-radius:20px;
 
-        .username{
-          font-size:34px;
-          margin-top:8px;
-        }
+          padding:18px;
 
-        .license{
-          margin-top:15px;
-          display:inline-block;
-          padding:10px 18px;
-          border:1px solid #d4af37;
-          border-radius:12px;
-          color:#d4af37;
-          background:rgba(212,175,55,0.08);
-        }
-
-        .profileBox{
           display:flex;
           align-items:center;
           gap:15px;
-          background:#0c0c0c;
-          border:1px solid rgba(212,175,55,0.2);
-          padding:14px 18px;
-          border-radius:18px;
         }
 
-        .profilePic{
+        .profile img{
           width:60px;
           height:60px;
           border-radius:50%;
           border:2px solid #d4af37;
         }
 
-        .logged{
+        .profile p{
+          color:#d4af37;
+          margin-top:5px;
+        }
+
+        .profile span{
+          color:#666;
+          font-size:13px;
+        }
+
+        /* MAIN */
+
+        .main{
+          flex:1;
+          padding:40px;
+        }
+
+        .top{
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+        }
+
+        .top h1{
+          color:#666;
+          font-size:18px;
+        }
+
+        .top h2{
+          font-size:42px;
+          margin-top:10px;
+        }
+
+        .userBox{
+          display:flex;
+          align-items:center;
+          gap:15px;
+
+          background:#0b0b0b;
+
+          border:
+            1px solid rgba(212,175,55,0.1);
+
+          padding:14px 18px;
+
+          border-radius:18px;
+        }
+
+        .userBox img{
+          width:55px;
+          height:55px;
+          border-radius:50%;
+          border:2px solid #d4af37;
+        }
+
+        .userBox p{
           color:#777;
           font-size:13px;
         }
 
-        .discordName{
+        .userBox span{
           font-size:18px;
           font-weight:700;
         }
 
-        .loginBox{
-          width:100%;
-          height:60vh;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-        }
-
-        .discordBtn{
-          background:#d4af37;
-          color:black;
-          border:none;
-          padding:18px 40px;
-          border-radius:14px;
-          font-size:18px;
-          font-weight:700;
-          cursor:pointer;
-          transition:0.3s;
-        }
-
-        .discordBtn:hover{
-          transform:scale(1.05);
-          box-shadow:0 0 30px rgba(212,175,55,0.3);
-        }
+        /* CARDS */
 
         .cards{
           display:grid;
-          grid-template-columns:repeat(4,1fr);
+          grid-template-columns:
+            repeat(4,1fr);
+
           gap:20px;
-          margin-bottom:30px;
+
+          margin-top:40px;
         }
 
         .card{
           background:#0a0a0a;
-          border:1px solid rgba(212,175,55,0.12);
+
+          border:
+            1px solid rgba(212,175,55,0.08);
+
           border-radius:20px;
+
           padding:30px;
         }
 
         .card h3{
           color:#777;
-          margin-bottom:15px;
         }
 
         .card p{
-          font-size:30px;
+          margin-top:15px;
+
+          font-size:32px;
+
           color:#d4af37;
+
           font-weight:700;
         }
 
-        .scannerBox{
+        /* SCANNER */
+
+        .scanner{
+          margin-top:35px;
+
           background:#090909;
-          border:1px solid rgba(212,175,55,0.12);
-          border-radius:24px;
+
+          border:
+            1px solid rgba(212,175,55,0.08);
+
+          border-radius:30px;
+
           padding:40px;
         }
 
-        .scannerBox h2{
-          font-size:38px;
+        .scanner h1{
+          font-size:42px;
           color:#d4af37;
         }
 
-        .scannerBox p{
-          margin-top:10px;
+        .scanner p{
           color:#777;
+          margin-top:12px;
         }
 
-        .scanBar{
+        .bar{
           width:100%;
-          height:18px;
+          height:20px;
+
           background:#111;
-          border-radius:20px;
-          margin-top:30px;
+
+          border-radius:30px;
+
+          margin-top:35px;
+
           overflow:hidden;
         }
 
-        .scanProgress{
-          width:75%;
+        .progress{
+          width:70%;
           height:100%;
-          background:linear-gradient(90deg,#8b6b15,#d4af37);
-          border-radius:20px;
-          animation:scan 3s infinite alternate;
+
+          background:
+            linear-gradient(
+              90deg,
+              #8b6b15,
+              #d4af37
+            );
+
+          animation:
+            progress 3s infinite alternate;
         }
 
-        @keyframes scan{
+        @keyframes progress{
           from{
-            width:20%;
+            width:15%;
           }
+
           to{
             width:100%;
           }
         }
 
-        .scanButton{
+        .scanner button{
           margin-top:35px;
-          background:#d4af37;
-          color:black;
+
+          background:
+            linear-gradient(
+              90deg,
+              #8b6b15,
+              #d4af37
+            );
+
           border:none;
-          padding:18px 40px;
+
+          padding:18px 35px;
+
           border-radius:14px;
+
+          color:black;
+
           font-size:18px;
-          font-weight:700;
+
+          font-weight:800;
+
           cursor:pointer;
-        }
-
-        .userCard{
-          background:#0a0a0a;
-          border:1px solid rgba(212,175,55,0.15);
-          padding:20px;
-          border-radius:20px;
-          display:flex;
-          align-items:center;
-          gap:15px;
-        }
-
-        .avatar{
-          width:60px;
-          height:60px;
-          border-radius:50%;
-          border:2px solid #d4af37;
-        }
-
-        .userCard h3{
-          color:white;
-        }
-
-        .userCard p{
-          color:#d4af37;
-          margin-top:4px;
-        }
-
-        .userCard span{
-          color:#777;
-          font-size:13px;
         }
 
       `}</style>
