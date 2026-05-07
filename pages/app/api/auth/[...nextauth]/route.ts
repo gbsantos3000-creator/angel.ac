@@ -8,12 +8,7 @@ const handler = NextAuth({
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
     }),
   ],
-
   secret: process.env.NEXTAUTH_SECRET,
-
-  pages: {
-    signIn: "/",
-  },
 });
 
 export { handler as GET, handler as POST };
