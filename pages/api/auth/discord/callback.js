@@ -23,6 +23,10 @@ export default async function handler(req, res) {
 
   const tokenData = await tokenRes.json();
 
+  if (!tokenRes.ok) {
+    return res.status(400).json(tokenData);
+  }
+
   const userRes = await fetch("https://discord.com/api/users/@me", {
     headers: {
       Authorization: `Bearer ${tokenData.access_token}`,
@@ -31,5 +35,9 @@ export default async function handler(req, res) {
 
   const user = await userRes.json();
 
-  res.redirect(`/dashboard?username=${user.username}`);
+  if (!userRes.ok) {
+    return res.status(400).json(user);
+  }
+
+  res.redirect(`/dashboard?username=${encodeURIComponent(user.username)}`);
 }
