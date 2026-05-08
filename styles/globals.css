@@ -694,3 +694,43 @@ a {
 .detailsModal {
   z-index: 9999999 !important;
 }
+.scanPage,
+.scanPage * {
+  pointer-events: auto !important;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.downloadModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  z-index: 99999999;
+}
+
+.downloadBox {
+  width: 520px;
+  background: #111;
+  border: 1px solid rgba(212,175,55,0.25);
+  border-radius: 22px;
+  padding: 28px;
+}
+
+.downloadBox h2 {
+  color: #ffe16a;
+}
+
+.downloadBox input {
+  width: 100%;
+  background: #1b1b1b;
+  border: 1px solid rgba(212,175,55,0.25);
+  color: #5ea9ff;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 16px 0;
+}
