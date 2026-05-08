@@ -1,9 +1,10 @@
 import ctypes
 import sys
+
 def run_as_admin():
     try:
         is_admin = ctypes.windll.shell32.IsUserAnAdmin()
-    except:
+    except Exception:
         is_admin = False
 
     if not is_admin:
@@ -18,12 +19,12 @@ def run_as_admin():
         sys.exit()
 
 run_as_admin()
+
 import tkinter as tk
 import requests
 import threading
 import time
 
-APP_NAME = "ANGEL A.C"
 API_URL = "https://angel-ac-zocv.vercel.app/api/validate-pin"
 
 CHECKS = [
@@ -34,10 +35,6 @@ CHECKS = [
     "Checking hidden drivers...",
     "Checking hidden modules...",
     "Checking vulnerable drivers...",
-    "Checking iqvw64e.sys...",
-    "Checking capcom.sys...",
-    "Checking gdrv.sys...",
-    "Checking winring0...",
     "Checking process hollowing...",
     "Checking RWX memory...",
     "Checking shellcode regions...",
@@ -45,25 +42,11 @@ CHECKS = [
     "Checking PE headers...",
     "Checking FiveM cache...",
     "Checking Citizen Runtime...",
-    "Checking FiveM resources...",
     "Checking injected DLLs...",
-    "Checking DLL side loading...",
     "Checking overlays...",
-    "Checking Discord Overlay...",
-    "Checking NVIDIA Overlay...",
-    "Checking OBS...",
-    "Checking RTSS...",
     "Checking Windows Defender...",
-    "Checking Firewall...",
-    "Checking SmartScreen...",
-    "Checking Tamper Protection...",
     "Checking Secure Boot...",
-    "Checking TPM...",
-    "Checking TestSigning...",
-    "Checking Debug Mode...",
     "Checking Registry Run keys...",
-    "Checking IFEO entries...",
-    "Checking AppInit_DLLs...",
     "Checking Event Logs...",
     "Building forensic timeline...",
     "Generating verdict...",
@@ -104,14 +87,13 @@ class AngelScanner:
             font=("Segoe UI", 10)
         ).pack(anchor="w", padx=28, pady=(0, 18))
 
-        self.pin_label = tk.Label(
+        tk.Label(
             self.panel,
             text="PIN:",
             bg="#080808",
             fg="#d4af37",
             font=("Segoe UI", 12, "bold")
-        )
-        self.pin_label.pack(anchor="w", padx=28, pady=(0, 6))
+        ).pack(anchor="w", padx=28, pady=(0, 6))
 
         self.pin_entry = tk.Entry(
             self.panel,
@@ -134,6 +116,14 @@ class AngelScanner:
             font=("Segoe UI", 11, "bold")
         )
         self.status.pack(anchor="w", padx=28, pady=(18, 8))
+
+        self.result_label = tk.Label(
+            self.panel,
+            text="",
+            bg="#080808",
+            fg="#00ff88",
+            font=("Segoe UI", 18, "bold")
+        )
 
         self.progress_bg = tk.Frame(self.panel, bg="#111111", height=16)
         self.progress = tk.Frame(self.progress_bg, bg="#d4af37", width=0)
@@ -164,10 +154,9 @@ class AngelScanner:
     def show_scan_area(self):
         self.progress_bg.pack(fill="x", padx=28, pady=(0, 18))
         self.progress.place(x=0, y=0, height=16)
-
         self.log_box.pack(fill="both", expand=True, padx=28, pady=(0, 18))
-
         self.start_btn.pack_forget()
+        self.result_label.pack_forget()
 
     def log(self, text):
         self.log_box.insert("end", text + "\n")
@@ -186,7 +175,12 @@ class AngelScanner:
 
         self.start_btn.config(state="disabled")
         self.pin_entry.config(state="disabled")
-        threading.Thread(target=self.validate_and_scan, args=(pin,), daemon=True).start()
+
+        threading.Thread(
+            target=self.validate_and_scan,
+            args=(pin,),
+            daemon=True
+        ).start()
 
     def validate_and_scan(self, pin):
         self.status.config(text="VALIDATING PIN...", fg="#d4af37")
@@ -222,9 +216,12 @@ class AngelScanner:
             self.log("[OK] " + check)
             time.sleep(0.13)
 
-        self.status.config(text="SCAN COMPLETED — CLEAN", fg="#00ff88")
+        self.status.config(text="SCAN COMPLETED", fg="#00ff88")
         self.log("[VERDICT] CLEAN")
         self.log("[SESSION] PIN consumed. This PIN cannot be reused.")
+
+        self.result_label.config(text="RESULT: CLEAN")
+        self.result_label.pack(pady=(4, 12))
 
 if __name__ == "__main__":
     root = tk.Tk()
