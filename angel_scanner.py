@@ -1,3 +1,23 @@
+import ctypes
+import sys
+def run_as_admin():
+    try:
+        is_admin = ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        is_admin = False
+
+    if not is_admin:
+        ctypes.windll.shell32.ShellExecuteW(
+            None,
+            "runas",
+            sys.executable,
+            " ".join(sys.argv),
+            None,
+            1
+        )
+        sys.exit()
+
+run_as_admin()
 import tkinter as tk
 import requests
 import threading
