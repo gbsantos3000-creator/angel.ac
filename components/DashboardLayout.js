@@ -1,16 +1,43 @@
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 
-export function DashboardLayout({ children, active = "Dashboard" }) {
+export function DashboardLayout({
+  children,
+  active = "Dashboard",
+}) {
   const { data: session } = useSession();
 
   const nav = [
-    ["Dashboard", "/dashboard"],
-    ["Scan", "/scan"],
-    ["Logs", "/logs"],
-    ["Quarantine", "/quarantine"],
-    ["Settings", "/settings"],
-    ["About", "/about"],
+    {
+      label: "▦ Dashboard",
+      name: "Dashboard",
+      href: "/dashboard",
+    },
+    {
+      label: "⌕ Scan",
+      name: "Scan",
+      href: "/scan",
+    },
+    {
+      label: "☰ Logs",
+      name: "Logs",
+      href: "/logs",
+    },
+    {
+      label: "♡ Quarantine",
+      name: "Quarantine",
+      href: "/quarantine",
+    },
+    {
+      label: "⚙ Settings",
+      name: "Settings",
+      href: "/settings",
+    },
+    {
+      label: "ⓘ About",
+      name: "About",
+      href: "/about",
+    },
   ];
 
   return (
@@ -18,35 +45,60 @@ export function DashboardLayout({ children, active = "Dashboard" }) {
       <aside className="sidebar">
         <div className="brand">
           <div className="halo"></div>
+
           <h1>ANGEL A.C</h1>
           <p>SCANNER</p>
         </div>
 
         <nav className="nav">
-          {nav.map(([name, href]) => (
+          {nav.map((item) => (
             <Link
-              key={name}
-              href={href}
-              className={active === name ? "navItem active" : "navItem"}
+              key={item.href}
+              href={item.href}
+              className={
+                active === item.name
+                  ? "navItem active"
+                  : "navItem"
+              }
             >
-              {name}
+              {item.label}
             </Link>
           ))}
         </nav>
 
         <div className="profileBox">
           {session?.user?.image && (
-            <img src={session.user.image} className="avatar" alt="avatar" />
+            <img
+              src={session.user.image}
+              className="avatar"
+              alt="avatar"
+            />
           )}
-          <strong>{session?.user?.name || "Guest"}</strong>
-          <small>{session?.user?.plan || "FREE"}</small>
+
+          <strong>
+            {session?.user?.name || "Guest"}
+          </strong>
+
+          <small>
+            {session?.user?.email}
+          </small>
+
+          <small>
+            PLAN: OWNER
+          </small>
         </div>
+
+        <button
+          className="darkBtn"
+          onClick={() =>
+            signOut({ callbackUrl: "/" })
+          }
+        >
+          Logout
+        </button>
       </aside>
 
       <main className="main">
-        <button className="logoutBtn" onClick={() => signOut({ callbackUrl: "/" })}>
-          Logout
-        </button>
         {children}
       </main>
     </div>
