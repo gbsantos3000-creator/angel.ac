@@ -9,6 +9,8 @@ export default NextAuth({
     }),
   ],
 
+  secret: process.env.NEXTAUTH_SECRET,
+
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
@@ -17,26 +19,4 @@ export default NextAuth({
   jwt: {
     maxAge: 30 * 24 * 60 * 60,
   },
-
-  callbacks: {
-    async jwt({ token, account, profile }) {
-      if (account && profile) {
-        token.discordId = profile.id
-        token.username = profile.username
-        token.globalName = profile.global_name
-      }
-
-      return token
-    },
-
-    async session({ session, token }) {
-      session.user.id = token.discordId
-      session.user.username = token.username
-      session.user.globalName = token.globalName
-
-      return session
-    },
-  },
-
-  secret: process.env.NEXTAUTH_SECRET,
 })
