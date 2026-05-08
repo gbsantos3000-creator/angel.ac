@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from "next/router"
 import ScannerDashboard from "../src/components/ScannerDashboard"
@@ -10,7 +10,7 @@ export default function Home() {
   const [pin, setPin] = useState("")
   const [generated, setGenerated] = useState(false)
 
-  const generatePin = () => {
+  const generatePin = () => 
     const code = Math.floor(100000 + Math.random() * 900000).toString()
     setPin(code)
     setGenerated(true)
