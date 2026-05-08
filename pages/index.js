@@ -3,7 +3,8 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from "next/router"
 import ScannerDashboard from "../src/components/ScannerDashboard"
 
-export default function Home() {
+export default function Home(const [roleRequested, setRoleRequested] = useState(false)
+const [pinStatus, setPinStatus] = useState("Not generated")) {
   const { data: session, status } = useSession()
   const router = useRouter()
 
