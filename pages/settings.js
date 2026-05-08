@@ -1,5 +1,4 @@
-import DashboardLayout from "../components/DashboardLayout";
-
+import { DashboardLayout } from "../components/DashboardLayout";
 export default function Settings() {
   return (
     <DashboardLayout active="Settings">
