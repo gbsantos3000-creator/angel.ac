@@ -3,22 +3,47 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from "next/router"
 import ScannerDashboard from "../src/components/ScannerDashboard"
 
-export default function Home(const [roleRequested, setRoleRequested] = useState(false)
-const [pinStatus, setPinStatus] = useState("Not generated")) {
+export default function Home() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
   const [pin, setPin] = useState("")
   const [generated, setGenerated] = useState(false)
+  const [roleRequested, setRoleRequested] = useState(false)
+  const [pinStatus, setPinStatus] = useState("Not generated")
 
-  const generatePin = () => 
-    const code = Math.floor(100000 + Math.random() * 900000).toString()
-    setPin(code)
-    setGenerated(true)
+  const generatePin = async () => {
+    const res = await fetch("/api/generate-pin", {
+      method: "POST",
+    })
+
+    const data = await res.json()
+
+    if (data.success) {
+      setPin(data.pin)
+      setGenerated(true)
+      setPinStatus("Waiting for use")
+    }
+  }
+
+  const requestRole = async () => {
+    await fetch("/api/request-role", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: session?.user?.name,
+        email: session?.user?.email,
+        image: session?.user?.image,
+      }),
+    })
+
+    setRoleRequested(true)
   }
 
   const downloadScanner = () => {
-    window.location.href = "/downloads/angel-scanner.exe"
+    window.location.href = "/downloads/angel-scanner-v2.exe"
   }
 
   if (status === "loading") {
@@ -187,8 +212,9 @@ const [pinStatus, setPinStatus] = useState("Not generated")) {
 
         <div className="bottomGrid">
           <div className="scanBox">
-            <h2>QUICK SCAN</h2>
-            <p>Generate a PIN igual estilo Napse e baixe o scanner ANGEL A.C.</p>
+            <h2>Get your Pin</h2>
+
+            <p>Generate a valid download link.</p>
 
             <div className="scanTop">
               <span>Scanner status</span>
@@ -204,6 +230,7 @@ const [pinStatus, setPinStatus] = useState("Not generated")) {
 
               <div>
                 <h1>{generated ? "PIN GENERATED" : "WAITING GENERATE"}</h1>
+
                 <p>
                   {generated
                     ? "PIN criado. Agora você pode baixar o scanner."
@@ -232,6 +259,20 @@ const [pinStatus, setPinStatus] = useState("Not generated")) {
                 ⌕ DOWNLOAD SCANNER
               </button>
             </div>
+
+            <button
+              className="darkBtn"
+              onClick={requestRole}
+              style={{ width: "100%", marginTop: "18px" }}
+            >
+              🛡 REQUEST ROLE
+            </button>
+
+            {roleRequested && (
+              <p style={{ color: "#00ff88", marginTop: "15px" }}>
+                Request sent to Discord.
+              </p>
+            )}
           </div>
 
           <div className="infoBox">
@@ -243,8 +284,8 @@ const [pinStatus, setPinStatus] = useState("Not generated")) {
             </div>
 
             <div className="infoRow">
-              <span>PIN</span>
-              <strong>{generated ? pin : "NOT GENERATED"}</strong>
+              <span>PIN STATUS</span>
+              <strong>{generated ? pinStatus : "NOT GENERATED"}</strong>
             </div>
 
             <div className="infoRow">
@@ -259,7 +300,7 @@ const [pinStatus, setPinStatus] = useState("Not generated")) {
 
             <div className="infoRow">
               <span>SCANNER</span>
-              <strong>angel-scanner.exe</strong>
+              <strong>angel-scanner-v2.exe</strong>
             </div>
           </div>
         </div>
