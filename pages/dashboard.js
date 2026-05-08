@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
-import DashboardLayout from "@/components/DashboardLayout";
-
+import DashboardLayout from "../components/DashboardLayout";
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const [uptime, setUptime] = useState(0);
