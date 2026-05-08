@@ -1,9 +1,9 @@
-const pins = global.pins || new Map()
-global.pins = pins
+const pins = global.angelPins || new Map()
+global.angelPins = pins
 
 export default function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" })
+    return res.status(405).json({ success: false })
   }
 
   const { pin } = req.body
