@@ -5,7 +5,14 @@ export const PRODUCT_SIGNATURES = [
   "Zyon",
   "Void.ac",
   "Ocean.ac",
-];
+  "FiveM",
+  "Citizen Runtime",
+  "Discord Overlay",
+  "NVIDIA Overlay",
+  "OBS",
+  "RTSS",
+  "MSI Afterburner",
+]
 
 export const SCANNER_CATEGORIES = {
   kernel: [
@@ -16,15 +23,33 @@ export const SCANNER_CATEGORIES = {
     "Image Load Callbacks",
     "Hidden Modules",
     "Hidden Drivers",
+    "Kernel Monitor",
+    "Signed Driver Verification",
+    "Certificate Validation",
   ],
 
   memory: [
     "Process Hollowing",
     "RWX Memory",
     "CREATE_SUSPENDED",
+    "Manual Map Indicators",
     "Shellcode Regions",
     "Executable Private Memory",
     "Orphan Modules",
+    "PE Header Validation",
+    "Thread Start Address",
+    "Parent PID Anomalies",
+  ],
+
+  drivers: [
+    "iqvw64e.sys",
+    "capcom.sys",
+    "gdrv.sys",
+    "winring0",
+    "asusgio",
+    "Hidden Driver Detection",
+    "Driver Object Anomaly",
+    "Vulnerable Driver Detection",
   ],
 
   security: [
@@ -33,23 +58,59 @@ export const SCANNER_CATEGORIES = {
     "SmartScreen",
     "Tamper Protection",
     "Cloud Protection",
+    "IOAV Protection",
+    "Defender Exclusions",
+    "Threat History",
+    "Audit Policies",
   ],
 
   forensic: [
     "ETW Monitoring",
     "YARA Scanning",
+    "Module Reputation",
     "Timeline Correlation",
-    "Integrity Snapshots",
+    "Anomaly Heuristics",
     "Telemetry Upload",
+    "Integrity Snapshots",
+    "Tamper Alerts",
+    "Cleared Logs",
+    "Administrative Activity",
   ],
 
   fivem: [
     "FiveM Cache",
     "Citizen Runtime",
     "FiveM Resources",
-    "Overlay Detection",
+    "Injected DLLs",
+    "DLL Side Loading",
+    "server-cache",
+    "server-cache-priv",
+    "nui-storage",
+    "Runtime Integrity",
   ],
-};
+
+  boot: [
+    "UEFI Integrity",
+    "Secure Boot",
+    "TPM",
+    "TestSigning",
+    "Debug Mode",
+    "BCD Integrity",
+    "Boot Integrity",
+  ],
+
+  registry: [
+    "Run",
+    "RunOnce",
+    "Services",
+    "Drivers",
+    "IFEO",
+    "KnownDLLs",
+    "AppInit_DLLs",
+    "SilentProcessExit",
+    "Registry Forensic",
+  ],
+}
 
 export const ADVANCED_DETECTION_RULES = [
   {
@@ -72,27 +133,19 @@ export const ADVANCED_DETECTION_RULES = [
     title: "Overlay Detection",
     severity: "medium",
   },
-];
+]
 
 export function buildScannerVerdict(findings) {
-  const critical = findings.filter(
-    (f) => f.severity === "critical"
-  ).length;
+  const critical = findings.filter((f) => f.severity === "critical").length
+  const high = findings.filter((f) => f.severity === "high").length
+  const medium = findings.filter((f) => f.severity === "medium").length
 
-  const high = findings.filter(
-    (f) => f.severity === "high"
-  ).length;
-
-  const medium = findings.filter(
-    (f) => f.severity === "medium"
-  ).length;
-
-  let verdict = "CLEAN";
+  let verdict = "CLEAN"
 
   if (critical >= 1) {
-    verdict = "BLOCKED";
+    verdict = "BLOCKED"
   } else if (high >= 1) {
-    verdict = "SUSPICIOUS";
+    verdict = "SUSPICIOUS"
   }
 
   return {
@@ -101,5 +154,5 @@ export function buildScannerVerdict(findings) {
     high,
     medium,
     total: findings.length,
-  };
+  }
 }
