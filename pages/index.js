@@ -1,8 +1,13 @@
 import { useSession, signIn, signOut } from "next-auth/react"
-import ScannerDashboard from "../src/components/ScannerDashboard"
+import { useRouter } from "next/router"
 
 export default function Home() {
   const { data: session, status } = useSession()
+  const router = useRouter()
+
+  const downloadScanner = () => {
+    window.location.href = "/downloads/angel-scanner.exe"
+  }
 
   if (status === "loading") {
     return (
@@ -97,7 +102,6 @@ export default function Home() {
             font-size: 17px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
           }
         `}</style>
       </div>
@@ -117,11 +121,32 @@ export default function Home() {
 
         <div className="menu">
           <button className="active">▦ Dashboard</button>
-          <button>⌕ Scan</button>
-          <button>▤ Logs</button>
-          <button>🛡 Quarantine</button>
-          <button>⚙ Settings</button>
-          <button>ⓘ About</button>
+
+          <button onClick={() => router.push("/scan")}>
+            ⌕ Scan
+          </button>
+
+          <button onClick={() => router.push("/logs")}>
+            ▤ Logs
+          </button>
+
+          <button onClick={() => router.push("/quarantine")}>
+            🛡 Quarantine
+          </button>
+
+          <button onClick={() => router.push("/settings")}>
+            ⚙ Settings
+          </button>
+
+          <button onClick={() => router.push("/about")}>
+            ⓘ About
+          </button>
+        </div>
+
+        <div className="protectionBox">
+          <h3>PROTECTION</h3>
+          <span>ACTIVE</span>
+          <p>Real-time protection enabled</p>
         </div>
       </aside>
 
@@ -131,6 +156,7 @@ export default function Home() {
           <div className="heroText">
             <h1>ANGEL A.C</h1>
             <p>ADVANCED ANTI-CHEAT SCANNER</p>
+            <span>POWERFUL · FAST · SECURE</span>
           </div>
 
           <button className="logout" onClick={() => signOut()}>
@@ -139,29 +165,120 @@ export default function Home() {
         </section>
 
         <div className="cards">
+
           <div className="card">
             <h3>STATUS</h3>
             <h2>PROTECTED</h2>
+            <p>Your system is secure</p>
           </div>
 
           <div className="card">
             <h3>LAST SCAN</h3>
             <h2>2 MIN AGO</h2>
+            <p>No threats found</p>
           </div>
 
           <div className="card">
             <h3>THREATS BLOCKED</h3>
             <h2>0</h2>
+            <p>Total blocked</p>
           </div>
 
           <div className="card">
             <h3>SYSTEM UPTIME</h3>
             <h2>01:24:57</h2>
+            <p>Scanning in real-time</p>
           </div>
+
         </div>
 
-        {/* SCANNER */}
-        <ScannerDashboard />
+        <div className="bottomGrid">
+
+          <div className="scanBox">
+            <h2>QUICK SCAN</h2>
+
+            <p>
+              Scans critical areas of your system for threats.
+            </p>
+
+            <div className="scanTop">
+              <span></span>
+              <strong>100%</strong>
+            </div>
+
+            <div className="progressBar">
+              <div className="progress"></div>
+            </div>
+
+            <div className="completed">
+              <div className="check">✓</div>
+
+              <div>
+                <h1>SCAN COMPLETED</h1>
+                <p>
+                  No threats detected. Your system is clean.
+                </p>
+              </div>
+            </div>
+
+            <div className="buttons">
+
+              <button
+                className="goldBtn"
+                onClick={downloadScanner}
+              >
+                ⌕ DOWNLOAD SCANNER
+              </button>
+
+              <button
+                className="darkBtn"
+                onClick={downloadScanner}
+              >
+                🛡 FULL SCAN
+              </button>
+
+            </div>
+          </div>
+
+          <div className="infoBox">
+
+            <h2>SYSTEM INFORMATION</h2>
+
+            <div className="infoRow">
+              <span>USER</span>
+              <strong>
+                {session.user?.name || "Discord User"}
+              </strong>
+            </div>
+
+            <div className="infoRow">
+              <span>OS</span>
+              <strong>Windows 11 Pro</strong>
+            </div>
+
+            <div className="infoRow">
+              <span>CPU</span>
+              <strong>Intel Core i5-10400F</strong>
+            </div>
+
+            <div className="infoRow">
+              <span>GPU</span>
+              <strong>NVIDIA GTX 1650</strong>
+            </div>
+
+            <div className="infoRow">
+              <span>RAM</span>
+              <strong>16 GB</strong>
+            </div>
+
+            <div className="infoRow">
+              <span>VERSION</span>
+              <strong>1.0.0</strong>
+            </div>
+
+          </div>
+
+        </div>
 
       </main>
 
@@ -186,6 +303,20 @@ export default function Home() {
           background: #080808;
           border-right: 1px solid rgba(212,175,55,0.18);
           padding: 35px 25px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .sideLogo h1 {
+          color: #d4af37;
+          font-size: 32px;
+        }
+
+        .sideLogo p {
+          color: #d4af37;
+          letter-spacing: 5px;
+          font-size: 12px;
         }
 
         .menu {
@@ -202,6 +333,29 @@ export default function Home() {
           background: #111;
           color: white;
           cursor: pointer;
+          font-size: 16px;
+        }
+
+        .menu button:hover,
+        .active {
+          background: rgba(212,175,55,0.2);
+        }
+
+        .protectionBox {
+          padding: 20px;
+          border-radius: 18px;
+          background: #111;
+          border: 1px solid rgba(212,175,55,0.2);
+        }
+
+        .protectionBox h3 {
+          color: #b99038;
+        }
+
+        .protectionBox span {
+          color: #d4af37;
+          font-size: 24px;
+          font-weight: bold;
         }
 
         .mainContent {
@@ -211,37 +365,47 @@ export default function Home() {
 
         .hero {
           width: 100%;
-          height: 260px;
+          height: 320px;
           border-radius: 30px;
+          border: 1px solid rgba(212,175,55,0.18);
           background: #070707;
           display: flex;
           justify-content: center;
           align-items: center;
           position: relative;
           margin-bottom: 30px;
-          border: 1px solid rgba(212,175,55,0.18);
+        }
+
+        .heroText {
+          text-align: center;
         }
 
         .heroText h1 {
           color: #f3d27b;
-          font-size: 72px;
+          font-size: 86px;
+          letter-spacing: 8px;
         }
 
         .heroText p {
-          text-align: center;
+          color: #eee;
+          letter-spacing: 7px;
+        }
+
+        .heroText span {
+          display: block;
           color: #d4af37;
-          margin-top: 10px;
+          margin-top: 20px;
         }
 
         .logout {
           position: absolute;
-          top: 20px;
-          right: 20px;
+          top: 22px;
+          right: 22px;
           background: transparent;
-          border: 1px solid rgba(212,175,55,0.35);
           color: #d4af37;
-          padding: 10px 18px;
+          border: 1px solid rgba(212,175,55,0.35);
           border-radius: 12px;
+          padding: 10px 18px;
           cursor: pointer;
         }
 
@@ -249,10 +413,12 @@ export default function Home() {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 20px;
-          margin-bottom: 30px;
+          margin-bottom: 25px;
         }
 
-        .card {
+        .card,
+        .scanBox,
+        .infoBox {
           background: #0b0b0b;
           border: 1px solid rgba(212,175,55,0.16);
           border-radius: 22px;
@@ -264,8 +430,94 @@ export default function Home() {
           margin-bottom: 15px;
         }
 
-        .card h2 {
+        .card p {
+          color: #d4af37;
+          font-size: 13px;
+        }
+
+        .bottomGrid {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 25px;
+        }
+
+        .scanBox h2,
+        .infoBox h2 {
+          color: #d4af37;
+          margin-bottom: 15px;
+        }
+
+        .scanTop {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 20px;
+        }
+
+        .progressBar {
+          width: 100%;
+          height: 12px;
+          border-radius: 20px;
+          background: #111;
+          margin: 10px 0 35px;
+          overflow: hidden;
+        }
+
+        .progress {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, #8f641d, #f7d77e, #d4af37);
+        }
+
+        .completed {
+          display: flex;
+          align-items: center;
+          gap: 22px;
+        }
+
+        .check {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          border: 3px solid #d4af37;
+          color: #d4af37;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 48px;
+        }
+
+        .buttons {
+          display: flex;
+          gap: 20px;
+          margin-top: 30px;
+        }
+
+        .goldBtn,
+        .darkBtn {
+          flex: 1;
+          height: 60px;
+          border-radius: 16px;
+          font-size: 17px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+
+        .goldBtn {
+          background: linear-gradient(135deg, #d4af37, #705018);
           color: white;
+          border: none;
+        }
+
+        .darkBtn {
+          background: #111;
+          color: white;
+          border: 1px solid rgba(212,175,55,0.18);
+        }
+
+        .infoRow {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 25px;
         }
       `}</style>
     </div>
