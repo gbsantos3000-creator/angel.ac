@@ -1,18 +1,14 @@
 import NextAuth from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 
-const baseUrl = "https://angel-ac-zocv.vercel.app";
-
 export default NextAuth({
   providers: [
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
-      allowDangerousEmailAccountLinking: true,
       authorization: {
         params: {
           scope: "identify email",
-          redirect_uri: `${baseUrl}/api/auth/callback/discord`,
         },
       },
     }),
@@ -30,11 +26,9 @@ export default NextAuth({
   },
 
   callbacks: {
-    async jwt({ token, account, profile }) {
-      if (account && profile) {
-        token.id = profile.id;
+    async jwt({ token, profile }) {
+      if (profile) {
         token.username = profile.username;
-        token.avatar = profile.avatar;
       }
 
       return token;
@@ -42,8 +36,10 @@ export default NextAuth({
 
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id || token.sub;
-        session.user.name = token.username || session.user.name;
+        session.user.id = token.sub;
+        session.user.name =
+          token.username || session.user.name;
+
         session.user.plan = "OWNER";
         session.user.license = "LIFETIME";
       }
@@ -51,8 +47,8 @@ export default NextAuth({
       return session;
     },
 
-    async redirect({ url, baseUrl }) {
-      return "/dashboard";
+    async redirect({ baseUrl }) {
+      return `${baseUrl}/dashboard`;
     },
   },
 });
