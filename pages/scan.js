@@ -1,107 +1,212 @@
 import { useState } from "react";
-import { DashboardLayout } from "../components/DashboardLayout";
+import DashboardLayout from "../components/DashboardLayout";
 
 export default function Scan() {
   const [progress, setProgress] = useState(0);
-  const [scanning, setScanning] = useState(false);
-  const [status, setStatus] = useState("Ready to scan");
+  const [scanStatus, setScanStatus] =
+    useState("Ready to scan");
+
+  const [generatedLink, setGeneratedLink] =
+    useState("");
+
+  const [selectedResult, setSelectedResult] =
+    useState(null);
+
   const [pins, setPins] = useState([
-    { customer: "d3d11dllexec", pin: "527577", used: "Used", game: "FiveM", detection: "Bannable", name: "Empty" },
-    { customer: "d3d11dllexec", pin: "999395", used: "Used", game: "FiveM", detection: "Bannable", name: "Empty" },
-    { customer: "d3d11dllexec", pin: "328613", used: "Used", game: "FiveM", detection: "Bannable", name: "Empty" },
-    { customer: "d3d11dllexec", pin: "160361", used: "Used", game: "FiveM", detection: "Bannable", name: "Empty" },
-  ]);
-
-  function startScan(type) {
-    setScanning(true);
-    setProgress(0);
-    setStatus(`${type} scan running...`);
-
-    let value = 0;
-
-    const timer = setInterval(() => {
-      value += 7;
-
-      if (value >= 100) {
-        value = 100;
-        clearInterval(timer);
-        setScanning(false);
-        setStatus("Scan completed. No threats found.");
-
-        const newPin = {
-          customer: "d3d11dllexec",
-          pin: Math.floor(100000 + Math.random() * 900000).toString(),
-          used: "New",
-          game: "FiveM",
-          detection: "Clean",
-          name: "ANGEL Scan",
-        };
-
-        setPins((old) => [newPin, ...old]);
-      }
-
-      setProgress(value);
-    }, 180);
-  }
-
-  function generatePin() {
-    const newPin = {
+    {
       customer: "d3d11dllexec",
-      pin: Math.floor(100000 + Math.random() * 900000).toString(),
+      pin: "596374",
       used: "New",
       game: "FiveM",
       detection: "Clean",
       name: "Generated",
+      link: "",
+      details: {
+        status: "Clean",
+        threats: 0,
+        injector: "None",
+        executor: "None",
+        files: [],
+      },
+    },
+
+    {
+      customer: "d3d11dllexec",
+      pin: "613747",
+      used: "New",
+      game: "FiveM",
+      detection: "Clean",
+      name: "Generated",
+      link: "",
+      details: {
+        status: "Clean",
+        threats: 0,
+        injector: "None",
+        executor: "None",
+        files: [],
+      },
+    },
+
+    {
+      customer: "d3d11dllexec",
+      pin: "527577",
+      used: "Used",
+      game: "FiveM",
+      detection: "Bannable",
+      name: "Empty",
+      link: "",
+      details: {
+        status: "CHEAT DETECTED",
+        threats: 4,
+        injector: "redENGINE",
+        executor: "Lua Executor",
+        files: [
+          "d3d11.dll",
+          "modmenu.exe",
+          "executor.dll",
+          "redengine.dll",
+        ],
+      },
+    },
+
+    {
+      customer: "d3d11dllexec",
+      pin: "999395",
+      used: "Used",
+      game: "FiveM",
+      detection: "Bannable",
+      name: "Empty",
+      link: "",
+      details: {
+        status: "CHEAT DETECTED",
+        threats: 3,
+        injector: "HX Cheats",
+        executor: "Silent Injector",
+        files: [
+          "hx.dll",
+          "injector.exe",
+          "modmenu.dll",
+        ],
+      },
+    },
+  ]);
+
+  function startQuickScan() {
+    setProgress(0);
+    setScanStatus("Quick scan running...");
+
+    let value = 0;
+
+    const interval = setInterval(() => {
+      value += 10;
+
+      setProgress(value);
+
+      if (value >= 100) {
+        clearInterval(interval);
+
+        setScanStatus(
+          "Quick scan completed successfully."
+        );
+      }
+    }, 200);
+  }
+
+  function startFullScan() {
+    setProgress(0);
+    setScanStatus("Full scan running...");
+
+    let value = 0;
+
+    const interval = setInterval(() => {
+      value += 5;
+
+      setProgress(value);
+
+      if (value >= 100) {
+        clearInterval(interval);
+
+        setScanStatus(
+          "Full scan completed successfully."
+        );
+      }
+    }, 300);
+  }
+
+  function generatePin() {
+    const pin = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
+    const link = `${window.location.origin}/api/download?pin=${pin}`;
+
+    const newPin = {
+      customer: "d3d11dllexec",
+      pin,
+      used: "New",
+      game: "FiveM",
+      detection: "Clean",
+      name: "Generated",
+      link,
+
+      details: {
+        status: "Clean",
+        threats: 0,
+        injector: "None",
+        executor: "None",
+        files: [],
+      },
     };
 
     setPins((old) => [newPin, ...old]);
+
+    setGeneratedLink(link);
   }
 
   return (
-    <DashboardLayout active="Scan">
-      <div className="napseTop">
-        <div className="napseLogo">⚡ ANGEL A.C</div>
+    <DashboardLayout>
+      <div className="pageHeader">
+        <h1>SCAN CENTER</h1>
 
-        <div className="napseMenu">
-          <a href="/dashboard">Dashboard</a>
-          <a href="/scan">Scanner</a>
-          <a href="/logs">Logs</a>
-          <a href="/quarantine">Quarantine</a>
-          <a href="/settings">Settings</a>
-          <a href="/about">Guide</a>
+        <p>Run quick and full scans.</p>
+      </div>
+
+      <div className="scanCard">
+        <h2>{scanStatus}</h2>
+
+        <div className="scanBar">
+          <div
+            className="scanProgress"
+            style={{
+              width: `${progress}%`,
+            }}
+          />
+        </div>
+
+        <div className="scanPercent">
+          {progress}%
+        </div>
+
+        <div className="scanButtons">
+          <button
+            className="goldBtn"
+            onClick={startQuickScan}
+          >
+            Quick Scan
+          </button>
+
+          <button
+            className="darkBtn"
+            onClick={startFullScan}
+          >
+            Full Scan
+          </button>
         </div>
       </div>
 
-      <section className="angelBanner">
-        <div>
-          <span>SUPPORTED</span>
-          <h1>ANGEL A.C SCANNER</h1>
-          <p>Advanced detection · secure scan · fast results</p>
-        </div>
-
-        <div className="bannerBadge">
-          PROTECTION<br />ACTIVE
-        </div>
-      </section>
-
-      <section className="napseGrid">
-        <div className="napseTableBox">
-          <div className="tableHeader">
-            <h2>Scanner Results</h2>
-            <button onClick={() => startScan("Quick")} disabled={scanning}>
-              {scanning ? "Scanning..." : "Quick Scan"}
-            </button>
-          </div>
-
-          <div className="scanProgressBox">
-            <strong>{status}</strong>
-            <span>{progress}%</span>
-            <div className="progress">
-              <div style={{ width: `${progress}%` }}></div>
-            </div>
-          </div>
-
-          <table className="napseTable">
+      <div className="pinGrid">
+        <div className="pinTableWrap">
+          <table className="pinTable">
             <thead>
               <tr>
                 <th>Customer</th>
@@ -118,67 +223,218 @@ export default function Scan() {
               {pins.map((item, index) => (
                 <tr key={index}>
                   <td>{item.customer}</td>
+
                   <td>{item.pin}</td>
-                  <td className={item.used === "Used" ? "dangerText" : "safeText"}>
+
+                  <td
+                    className={
+                      item.used === "New"
+                        ? "statusClean"
+                        : "statusBad"
+                    }
+                  >
                     {item.used}
                   </td>
+
                   <td>
-                    <button className="viewBtn">▣ View</button>
+                    <button
+                      className="viewBtn"
+                      onClick={() =>
+                        setSelectedResult(item)
+                      }
+                    >
+                      ⊞ View
+                    </button>
                   </td>
-                  <td className="goldText">{item.game}</td>
+
+                  <td>{item.game}</td>
+
                   <td>
-                    <span className={item.detection === "Bannable" ? "banBadge" : "cleanBadge"}>
+                    <span
+                      className={
+                        item.detection === "Clean"
+                          ? "detectClean"
+                          : "detectBad"
+                      }
+                    >
                       {item.detection}
                     </span>
                   </td>
-                  <td>{item.name} ⚙</td>
+
+                  <td>{item.name} ⚙️</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           <div className="tableFooter">
-            <button>Prev</button>
-            <span>Showing 1 - {pins.length} of {pins.length}</span>
-            <button>Next</button>
+            <button className="darkBtn">
+              Prev
+            </button>
+
+            <span>
+              Showing 1 - {pins.length} of{" "}
+              {pins.length}
+            </span>
+
+            <button className="darkBtn">
+              Next
+            </button>
           </div>
         </div>
 
-        <aside className="napseSide">
-          <div className="sideCard">
-            <div className="sideIcon">✦</div>
-            <h2>Get your Pin</h2>
-            <p>The limit is <b>(4)</b> pins available to generate more.</p>
+        <div className="sideActions">
+          <div className="actionCard">
+            <h3>Get your Pin</h3>
 
-            <div className="pinBox">
-              Generated PIN will appear here
-            </div>
+            <p>
+              Generate a valid download PIN.
+            </p>
 
-            <button className="goldBtn fullWidth" onClick={generatePin}>
+            <button
+              className="goldBtn fullWidth"
+              onClick={generatePin}
+            >
               ✨ Generate
             </button>
           </div>
 
-          <div className="sideCard">
-            <div className="sideIcon">⌕</div>
-            <h2>Search Pins</h2>
-            <p>Find a specific PIN in your list quickly.</p>
+          <div className="actionCard">
+            <h3>Search Pins</h3>
 
-            <input className="searchInput" placeholder="Enter Pin or Name" />
+            <input
+              placeholder="Enter PIN or Name"
+              className="searchInput"
+            />
 
-            <button className="goldBtn fullWidth">
-              ⌕ Search
+            <button className="purpleBtn fullWidth">
+              Search
             </button>
           </div>
+        </div>
+      </div>
 
-          <div className="sideCard">
-            <div className="sideIcon">☁</div>
-            <h2>Cloud Status</h2>
-            <p>Connected to ANGEL A.C cloud.</p>
-            <span className="safeText">Online</span>
+      {generatedLink && (
+        <div className="downloadModal">
+          <div className="downloadBox">
+            <h2>Valid Download Link</h2>
+
+            <p>
+              Copy this link and send it to the
+              user.
+            </p>
+
+            <input
+              value={generatedLink}
+              readOnly
+            />
+
+            <button
+              className="goldBtn fullWidth"
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  generatedLink
+                )
+              }
+            >
+              Copy Link
+            </button>
+
+            <button
+              className="darkBtn fullWidth"
+              onClick={() =>
+                setGeneratedLink("")
+              }
+            >
+              Close
+            </button>
           </div>
-        </aside>
-      </section>
+        </div>
+      )}
+
+      {selectedResult && (
+        <div className="detailsModal">
+          <div className="detailsBox">
+            <div className="detailsHeader">
+              <h2>Scanner Result</h2>
+
+              <button
+                onClick={() =>
+                  setSelectedResult(null)
+                }
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="detailsContent">
+              <div className="detailRow">
+                <span>Status</span>
+
+                <strong>
+                  {
+                    selectedResult.details
+                      .status
+                  }
+                </strong>
+              </div>
+
+              <div className="detailRow">
+                <span>Threats</span>
+
+                <strong>
+                  {
+                    selectedResult.details
+                      .threats
+                  }
+                </strong>
+              </div>
+
+              <div className="detailRow">
+                <span>Injector</span>
+
+                <strong>
+                  {
+                    selectedResult.details
+                      .injector
+                  }
+                </strong>
+              </div>
+
+              <div className="detailRow">
+                <span>Executor</span>
+
+                <strong>
+                  {
+                    selectedResult.details
+                      .executor
+                  }
+                </strong>
+              </div>
+
+              <div className="detectedFiles">
+                <h3>Detected Files</h3>
+
+                {selectedResult.details.files
+                  .length === 0 ? (
+                  <p>No malicious files found.</p>
+                ) : (
+                  selectedResult.details.files.map(
+                    (file, index) => (
+                      <div
+                        key={index}
+                        className="fileItem"
+                      >
+                        {file}
+                      </div>
+                    )
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }
