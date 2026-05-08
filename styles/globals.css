@@ -345,3 +345,260 @@ a,
 .darkBtn {
   font: inherit;
 }
+.napseTop {
+  height: 70px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  background: rgba(15, 15, 15, 0.95);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 26px;
+  margin-bottom: 28px;
+}
+
+.napseLogo {
+  background: linear-gradient(135deg, #d4af37, #ffe16a);
+  color: #080808;
+  font-weight: 900;
+  padding: 14px 22px;
+  border-radius: 14px;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.35);
+}
+
+.napseMenu {
+  display: flex;
+  gap: 34px;
+}
+
+.napseMenu a {
+  color: #cfcfcf;
+  font-weight: 700;
+}
+
+.napseMenu a:hover {
+  color: #ffe16a;
+}
+
+.angelBanner {
+  min-height: 255px;
+  border-radius: 24px;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.75), rgba(212,175,55,0.18)),
+    radial-gradient(circle at right, rgba(255,225,106,0.35), transparent 35%),
+    #080808;
+  padding: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 34px;
+  overflow: hidden;
+}
+
+.angelBanner span {
+  color: #b8922a;
+  font-weight: 800;
+}
+
+.angelBanner h1 {
+  font-size: 58px;
+  letter-spacing: 6px;
+  color: #ffe16a;
+  margin: 12px 0;
+  text-shadow: 0 0 35px rgba(212,175,55,0.55);
+}
+
+.angelBanner p {
+  color: white;
+  letter-spacing: 3px;
+}
+
+.bannerBadge {
+  border: 2px solid #d4af37;
+  color: #ffe16a;
+  padding: 30px;
+  border-radius: 22px;
+  font-size: 28px;
+  font-weight: 900;
+  text-align: center;
+  box-shadow: 0 0 35px rgba(212,175,55,0.35);
+}
+
+.napseGrid {
+  display: grid;
+  grid-template-columns: 2.2fr 0.8fr;
+  gap: 28px;
+}
+
+.napseTableBox,
+.sideCard {
+  background: #111;
+  border: 1px solid rgba(212,175,55,0.14);
+  border-radius: 22px;
+  padding: 28px;
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tableHeader h2,
+.sideCard h2 {
+  color: white;
+  margin: 0;
+}
+
+.tableHeader button {
+  border: none;
+  background: linear-gradient(135deg, #d4af37, #8b6418);
+  color: white;
+  padding: 13px 22px;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.scanProgressBox {
+  margin: 22px 0;
+}
+
+.scanProgressBox {
+  color: white;
+  display: grid;
+  gap: 12px;
+}
+
+.scanProgressBox span {
+  text-align: right;
+  color: #ffe16a;
+  font-weight: 900;
+}
+
+.napseTable {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+.napseTable th {
+  text-align: left;
+  color: #ffe16a;
+  padding: 18px 12px;
+  background: #171717;
+  font-size: 14px;
+}
+
+.napseTable td {
+  padding: 20px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: #d8d8d8;
+  font-weight: 600;
+}
+
+.viewBtn {
+  background: transparent;
+  color: #5eb1ff;
+  border: none;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.goldText {
+  color: #d4af37 !important;
+}
+
+.dangerText {
+  color: #ff5555 !important;
+}
+
+.safeText {
+  color: #58df58 !important;
+}
+
+.banBadge {
+  border: 1px solid #ff4040;
+  background: rgba(255, 40, 40, 0.18);
+  color: #ff6060;
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+
+.cleanBadge {
+  border: 1px solid #4fe04f;
+  background: rgba(40, 255, 40, 0.12);
+  color: #58df58;
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+
+.tableFooter {
+  margin-top: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #bbb;
+}
+
+.tableFooter button {
+  background: #111;
+  border: 1px solid rgba(212,175,55,0.25);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.napseSide {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sideIcon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: rgba(212,175,55,0.18);
+  color: #ffe16a;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  margin-bottom: 14px;
+}
+
+.sideCard p {
+  color: #bbb;
+  line-height: 1.5;
+}
+
+.pinBox,
+.searchInput {
+  width: 100%;
+  border: 1px solid rgba(212,175,55,0.25);
+  background: #101010;
+  color: #bbb;
+  padding: 16px;
+  border-radius: 10px;
+  margin: 15px 0;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .napseGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .napseMenu {
+    display: none;
+  }
+
+  .angelBanner h1 {
+    font-size: 36px;
+  }
+}
