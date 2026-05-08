@@ -16,5 +16,17 @@ export default NextAuth({
       },
     }),
   ],
+
   secret: process.env.NEXTAUTH_SECRET,
+
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.sub;
+        session.user.plan = "OWNER";
+        session.user.license = "LIFETIME";
+      }
+      return session;
+    },
+  },
 });
