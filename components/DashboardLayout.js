@@ -3,26 +3,39 @@ import { signOut, useSession } from "next-auth/react";
 export function DashboardLayout({ children, active = "Dashboard" }) {
   const { data: session } = useSession();
 
-  function go(path) {
-    window.location.href = path;
-  }
-
   return (
     <div className="appShell">
       <aside className="sidebar">
-        <div className="brand" onClick={() => go("/dashboard")}>
+        <a className="brand" href="/dashboard">
           <div className="halo"></div>
           <h1>ANGEL A.C</h1>
           <p>SCANNER</p>
-        </div>
+        </a>
 
         <nav className="nav">
-          <button className={active === "Dashboard" ? "navItem active" : "navItem"} onClick={() => go("/dashboard")}>▦ Dashboard</button>
-          <button className={active === "Scan" ? "navItem active" : "navItem"} onClick={() => go("/scan")}>⌕ Scan</button>
-          <button className={active === "Logs" ? "navItem active" : "navItem"} onClick={() => go("/logs")}>☰ Logs</button>
-          <button className={active === "Quarantine" ? "navItem active" : "navItem"} onClick={() => go("/quarantine")}>♡ Quarantine</button>
-          <button className={active === "Settings" ? "navItem active" : "navItem"} onClick={() => go("/settings")}>⚙ Settings</button>
-          <button className={active === "About" ? "navItem active" : "navItem"} onClick={() => go("/about")}>ⓘ About</button>
+          <a className={active === "Dashboard" ? "navItem active" : "navItem"} href="/dashboard">
+            ▦ Dashboard
+          </a>
+
+          <a className={active === "Scan" ? "navItem active" : "navItem"} href="/scan">
+            ⌕ Scan
+          </a>
+
+          <a className={active === "Logs" ? "navItem active" : "navItem"} href="/logs">
+            ☰ Logs
+          </a>
+
+          <a className={active === "Quarantine" ? "navItem active" : "navItem"} href="/quarantine">
+            ♡ Quarantine
+          </a>
+
+          <a className={active === "Settings" ? "navItem active" : "navItem"} href="/settings">
+            ⚙ Settings
+          </a>
+
+          <a className={active === "About" ? "navItem active" : "navItem"} href="/about">
+            ⓘ About
+          </a>
         </nav>
 
         <div className="profileBox">
@@ -31,7 +44,11 @@ export function DashboardLayout({ children, active = "Dashboard" }) {
           <small>{session?.user?.name || "Online"}</small>
         </div>
 
-        <button className="darkBtn" onClick={() => signOut({ callbackUrl: "/" })}>
+        <button
+          className="darkBtn"
+          type="button"
+          onClick={() => signOut({ callbackUrl: "/" })}
+        >
           Logout
         </button>
       </aside>
