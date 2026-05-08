@@ -1,5 +1,4 @@
-import DashboardLayout from "../components/DashboardLayout";
-
+import { DashboardLayout } from "../components/DashboardLayout";
 export default function About() {
   return (
     <DashboardLayout active="About">
