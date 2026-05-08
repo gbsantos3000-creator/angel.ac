@@ -56,29 +56,25 @@ export const ADVANCED_DETECTION_RULES = [
     title: "Vulnerable Driver",
     severity: "critical",
   },
-
   {
     title: "RWX Memory Region",
     severity: "high",
   },
-
   {
     title: "Manual Map Indicators",
     severity: "critical",
   },
-
   {
     title: "Kernel Callback Tampering",
     severity: "critical",
   },
-
   {
     title: "Overlay Detection",
     severity: "medium",
   },
 ];
 
-export function buildScannerVerdict(findings: any[]) {
+export function buildScannerVerdict(findings) {
   const critical = findings.filter(
     (f) => f.severity === "critical"
   ).length;
