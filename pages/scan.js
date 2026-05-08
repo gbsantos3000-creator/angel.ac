@@ -1,6 +1,5 @@
 import { useState } from "react";
-import DashboardLayout from "../components/DashboardLayout";
-
+import { DashboardLayout } from "../components/DashboardLayout";
 export default function Scan() {
   const [progress, setProgress] = useState(0);
   const [scanning, setScanning] = useState(false);
