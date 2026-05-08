@@ -656,3 +656,41 @@ button {
   border-radius: 12px;
   margin: 16px 0;
 }
+.sidebar,
+.sidebar *,
+.nav,
+.nav *,
+.brand,
+.goldBtn,
+.darkBtn,
+.viewBtn,
+.discordBtn {
+  pointer-events: auto !important;
+}
+
+.navItem,
+.brand {
+  display: block !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+}
+
+button,
+a {
+  cursor: pointer !important;
+}
+
+.sidebar {
+  position: relative !important;
+  z-index: 999999 !important;
+}
+
+.main {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.downloadModal,
+.detailsModal {
+  z-index: 9999999 !important;
+}
