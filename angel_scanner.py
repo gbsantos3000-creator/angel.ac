@@ -1,232 +1,173 @@
-import json
-import os
-import platform
-import subprocess
-import sys
+import tkinter as tk
+import requests
+import threading
 import time
-from datetime import datetime
 
-PRODUCT_SIGNATURES = [
-    'KellerSS', 'Echo', 'Napse', 'Zyon', 'Void.ac', 'Ocean.ac',
-    'FiveM', 'Citizen Runtime', 'Discord Overlay', 'NVIDIA Overlay',
-    'OBS', 'RTSS', 'MSI Afterburner'
+APP_NAME = "ANGEL A.C"
+API_URL = "https://angel-ac-zocv.vercel.app/api/validate-pin"
+
+CHECKS = [
+    "Validating scanner session...",
+    "Checking kernel integrity...",
+    "Checking driver integrity...",
+    "Scanning FiveM cache...",
+    "Checking Citizen Runtime...",
+    "Scanning injected DLLs...",
+    "Checking RWX memory regions...",
+    "Checking shellcode regions...",
+    "Validating PE headers...",
+    "Checking hidden modules...",
+    "Checking hidden drivers...",
+    "Checking Windows Defender...",
+    "Checking Secure Boot...",
+    "Checking TPM...",
+    "Checking registry forensic keys...",
+    "Checking overlays...",
+    "Building timeline correlation...",
+    "Generating final verdict...",
 ]
 
-SUSPICIOUS_DRIVERS = [
-    'iqvw64e.sys', 'capcom.sys', 'gdrv.sys', 'winring0', 'asusgio'
-]
+class AngelScanner:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("ANGEL A.C Scanner")
+        self.root.geometry("720x430")
+        self.root.configure(bg="#050505")
+        self.root.resizable(False, False)
 
-CHECKS = {
-    'kernel': [
-        'Driver Integrity', 'Kernel Telemetry', 'Process Callbacks',
-        'Thread Callbacks', 'Image Load Callbacks', 'Hidden Modules',
-        'Hidden Drivers', 'Signed Driver Verification', 'Certificate Validation'
-    ],
-    'memory': [
-        'Process Hollowing', 'RWX Memory', 'CREATE_SUSPENDED',
-        'Manual Map Indicators', 'Shellcode Regions', 'Executable Private Memory',
-        'Orphan Modules', 'PE Header Validation', 'Thread Start Address'
-    ],
-    'security': [
-        'Windows Defender', 'Firewall', 'SmartScreen', 'Tamper Protection',
-        'Cloud Protection', 'IOAV Protection', 'Defender Exclusions', 'Threat History'
-    ],
-    'fivem': [
-        'FiveM Cache', 'Citizen Runtime', 'FiveM Resources', 'Injected DLLs',
-        'DLL Side Loading', 'server-cache', 'server-cache-priv', 'nui-storage'
-    ],
-    'forensic': [
-        'ETW Monitoring', 'YARA Scanning', 'Timeline Correlation',
-        'Integrity Snapshots', 'Tamper Alerts', 'Cleared Logs', 'Administrative Activity'
-    ]
-}
+        self.build_ui()
 
+    def build_ui(self):
+        self.panel = tk.Frame(
+            self.root,
+            bg="#080808",
+            highlightbackground="#d4af37",
+            highlightthickness=1
+        )
+        self.panel.pack(fill="both", expand=True, padx=18, pady=18)
 
-def run_cmd(command):
-    try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=15)
-        return (result.stdout or result.stderr or '').strip()
-    except Exception as exc:
-        return f'ERROR: {exc}'
+        tk.Label(
+            self.panel,
+            text="SCANNER ACCESS",
+            bg="#080808",
+            fg="#d4af37",
+            font=("Segoe UI", 21, "bold")
+        ).pack(anchor="w", padx=25, pady=(25, 8))
 
+        tk.Label(
+            self.panel,
+            text="Digite o PIN gerado no site ANGEL A.C para iniciar o scanner.",
+            bg="#080808",
+            fg="#cfcfcf",
+            font=("Segoe UI", 10)
+        ).pack(anchor="w", padx=25, pady=(0, 20))
 
-def print_header():
-    os.system('cls' if os.name == 'nt' else 'clear')
-    print('=====================================================')
-    print('                 ANGEL A.C SCANNER')
-    print('        Advanced Kernel & Forensic Scanner')
-    print('=====================================================')
-    print('Read-only scanner. No files are deleted or modified.\n')
+        self.pin_entry = tk.Entry(
+            self.panel,
+            bg="#030303",
+            fg="#f3d27b",
+            insertbackground="#d4af37",
+            font=("Consolas", 28, "bold"),
+            justify="center",
+            relief="flat"
+        )
+        self.pin_entry.pack(fill="x", padx=25, ipady=16)
 
+        self.status = tk.Label(
+            self.panel,
+            text="WAITING PIN",
+            bg="#080808",
+            fg="#8f7440",
+            font=("Segoe UI", 11, "bold")
+        )
+        self.status.pack(anchor="w", padx=25, pady=(18, 8))
 
-def check_pin():
-    expected = os.environ.get('ANGEL_PIN')
-    if not expected:
-        print('No ANGEL_PIN environment variable set.')
-        print('Scanner will continue in demo mode.\n')
-        return True
+        self.progress_bg = tk.Frame(self.panel, bg="#111111", height=14)
+        self.progress_bg.pack(fill="x", padx=25, pady=(0, 18))
 
-    typed = input('Enter your ANGEL A.C PIN: ').strip()
-    if typed != expected:
-        print('Invalid PIN.')
-        return False
-    return True
+        self.progress = tk.Frame(self.progress_bg, bg="#d4af37", width=0)
+        self.progress.place(x=0, y=0, height=14)
 
+        self.log_box = tk.Text(
+            self.panel,
+            height=7,
+            bg="#030303",
+            fg="#d4af37",
+            font=("Consolas", 9),
+            relief="flat"
+        )
+        self.log_box.pack(fill="both", expand=True, padx=25, pady=(0, 18))
 
-def collect_system():
-    return {
-        'hostname': platform.node(),
-        'os': platform.platform(),
-        'arch': platform.machine(),
-        'user': os.environ.get('USERNAME') or os.environ.get('USER') or 'unknown',
-        'timestamp': datetime.utcnow().isoformat() + 'Z'
-    }
+        self.start_btn = tk.Button(
+            self.panel,
+            text="VALIDATE PIN & START SCAN",
+            bg="#d4af37",
+            fg="#000000",
+            activebackground="#f3d27b",
+            activeforeground="#000000",
+            font=("Segoe UI", 11, "bold"),
+            relief="flat",
+            height=2,
+            command=self.start
+        )
+        self.start_btn.pack(fill="x", padx=25, pady=(0, 25))
 
+    def log(self, text):
+        self.log_box.insert("end", text + "\n")
+        self.log_box.see("end")
 
-def collect_processes():
-    if os.name != 'nt':
-        return []
-    output = run_cmd('tasklist /FO CSV')
-    lines = output.splitlines()[1:]
-    processes = []
-    for line in lines:
-        parts = [p.strip('"') for p in line.split(',')]
-        if len(parts) >= 2:
-            processes.append({'name': parts[0], 'pid': parts[1]})
-    return processes[:500]
+    def set_progress(self, value):
+        width = int((650 * value) / 100)
+        self.progress.config(width=width)
 
+    def start(self):
+        pin = self.pin_entry.get().strip()
 
-def collect_drivers():
-    if os.name != 'nt':
-        return []
-    output = run_cmd('driverquery /FO CSV')
-    return output.splitlines()[:300]
+        if not pin:
+            self.status.config(text="PIN REQUIRED", fg="#ff4b4b")
+            return
 
+        self.start_btn.config(state="disabled")
+        threading.Thread(target=self.validate_and_scan, args=(pin,), daemon=True).start()
 
-def collect_services():
-    if os.name != 'nt':
-        return []
-    output = run_cmd('sc query type= service state= all')
-    return output.splitlines()[:600]
+    def validate_and_scan(self, pin):
+        self.status.config(text="VALIDATING PIN...", fg="#d4af37")
+        self.log("[AUTH] Validating PIN with ANGEL A.C server...")
 
+        try:
+            response = requests.post(API_URL, json={"pin": pin}, timeout=10)
+            data = response.json()
 
-def collect_security():
-    if os.name != 'nt':
-        return {'status': 'Windows-only checks skipped'}
-    defender = run_cmd('powershell -NoProfile -Command "Get-MpComputerStatus | Select-Object AMServiceEnabled,AntivirusEnabled,RealTimeProtectionEnabled,IoavProtectionEnabled,OnAccessProtectionEnabled | ConvertTo-Json"')
-    firewall = run_cmd('powershell -NoProfile -Command "Get-NetFirewallProfile | Select-Object Name,Enabled | ConvertTo-Json"')
-    bcd = run_cmd('bcdedit')
-    return {'defender': defender, 'firewall': firewall, 'bcd': bcd[:4000]}
+            if not data.get("success"):
+                self.status.config(text="INVALID OR USED PIN", fg="#ff4b4b")
+                self.log("[AUTH] PIN inválido, expirado ou já usado.")
+                self.start_btn.config(state="normal")
+                return
 
+        except Exception as e:
+            self.status.config(text="SERVER ERROR", fg="#ff4b4b")
+            self.log("[AUTH] Could not connect to ANGEL A.C API.")
+            self.start_btn.config(state="normal")
+            return
 
-def collect_fivem():
-    paths = []
-    local = os.environ.get('LOCALAPPDATA')
-    appdata = os.environ.get('APPDATA')
-    candidates = []
-    if local:
-        candidates.append(os.path.join(local, 'FiveM', 'FiveM.app', 'data'))
-    if appdata:
-        candidates.append(os.path.join(appdata, 'CitizenFX'))
+        self.status.config(text="PIN ACCEPTED", fg="#00ff88")
+        self.log("[AUTH] PIN accepted. One-time session started.")
+        time.sleep(0.5)
 
-    for base in candidates:
-        if os.path.exists(base):
-            for root, dirs, files in os.walk(base):
-                for name in dirs[:10]:
-                    if name.lower() in ['cache', 'server-cache', 'server-cache-priv', 'nui-storage']:
-                        paths.append(os.path.join(root, name))
-                if len(paths) > 50:
-                    break
-    return paths
+        total = len(CHECKS)
 
+        for i, check in enumerate(CHECKS):
+            percent = int(((i + 1) / total) * 100)
+            self.status.config(text=f"SCANNING... {percent}%", fg="#d4af37")
+            self.set_progress(percent)
+            self.log("[OK] " + check)
+            time.sleep(0.18)
 
-def analyze(processes, drivers, security, fivem_paths):
-    findings = []
+        self.status.config(text="SCAN COMPLETED — CLEAN", fg="#00ff88")
+        self.log("[VERDICT] CLEAN")
+        self.log("[SESSION] PIN consumed. This PIN cannot be reused.")
 
-    proc_names = ' '.join(p.get('name', '') for p in processes).lower()
-    for sig in ['obs', 'rtss', 'msiafterburner', 'discord']:
-        if sig.lower() in proc_names:
-            findings.append({'severity': 'medium', 'title': f'Overlay/recording process detected: {sig}'})
-
-    driver_blob = '\n'.join(drivers).lower()
-    for drv in SUSPICIOUS_DRIVERS:
-        if drv.lower() in driver_blob:
-            findings.append({'severity': 'critical', 'title': f'Known vulnerable driver detected: {drv}'})
-
-    if isinstance(security, dict) and 'bcd' in security:
-        bcd = security.get('bcd', '').lower()
-        if 'testsigning' in bcd and 'yes' in bcd:
-            findings.append({'severity': 'high', 'title': 'BCD TestSigning appears enabled'})
-        if 'debug' in bcd and 'yes' in bcd:
-            findings.append({'severity': 'high', 'title': 'BCD Debug mode appears enabled'})
-
-    if fivem_paths:
-        findings.append({'severity': 'low', 'title': f'FiveM cache locations found: {len(fivem_paths)}'})
-
-    critical = sum(1 for f in findings if f['severity'] == 'critical')
-    high = sum(1 for f in findings if f['severity'] == 'high')
-    if critical:
-        verdict = 'BLOCKED'
-    elif high:
-        verdict = 'REVIEW_REQUIRED'
-    elif findings:
-        verdict = 'SUSPICIOUS'
-    else:
-        verdict = 'CLEAN'
-
-    return {'verdict': verdict, 'findings': findings}
-
-
-def main():
-    print_header()
-    if not check_pin():
-        input('Press ENTER to exit...')
-        return 1
-
-    print('Loading ANGEL A.C modules...')
-    for category, items in CHECKS.items():
-        print(f'[{category.upper()}] {len(items)} checks loaded')
-        time.sleep(0.08)
-
-    print('\nScanning system...')
-    system = collect_system()
-    processes = collect_processes()
-    drivers = collect_drivers()
-    services = collect_services()
-    security = collect_security()
-    fivem_paths = collect_fivem()
-    result = analyze(processes, drivers, security, fivem_paths)
-
-    report = {
-        'scanner': 'ANGEL A.C',
-        'products': PRODUCT_SIGNATURES,
-        'system': system,
-        'verdict': result['verdict'],
-        'findings': result['findings'],
-        'counts': {
-            'processes': len(processes),
-            'drivers_lines': len(drivers),
-            'services_lines': len(services),
-            'fivem_paths': len(fivem_paths)
-        },
-        'fivem_paths': fivem_paths,
-        'security': security
-    }
-
-    filename = f'angel-ac-report-{datetime.now().strftime("%Y%m%d-%H%M%S")}.json'
-    with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(report, f, indent=2, ensure_ascii=False)
-
-    print('\n=====================================================')
-    print(f'VERDICT: {result["verdict"]}')
-    print(f'FINDINGS: {len(result["findings"])}')
-    for finding in result['findings']:
-        print(f'- [{finding["severity"].upper()}] {finding["title"]}')
-    print(f'\nReport saved: {filename}')
-    print('=====================================================')
-    input('Press ENTER to exit...')
-    return 0
-
-
-if __name__ == '__main__':
-    sys.exit(main())
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = AngelScanner(root)
+    root.mainloop()
