@@ -1,23 +1,18 @@
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { DashboardLayout } from "../components/DashboardLayout";
 
 export default function Dashboard() {
+  const router = useRouter();
   const { data: session } = useSession();
 
   return (
     <DashboardLayout active="Dashboard">
       <section className="hero">
         <div className="heroHalo"></div>
-
         <h1>ANGEL A.C</h1>
-
-        <h3>
-          ADVANCED ANTI-CHEAT SCANNER
-        </h3>
-
-        <p>
-          POWERFUL · FAST · SECURE
-        </p>
+        <h3>ADVANCED ANTI-CHEAT SCANNER</h3>
+        <p>POWERFUL · FAST · SECURE</p>
       </section>
 
       <section className="cards">
@@ -49,80 +44,41 @@ export default function Dashboard() {
       <section className="grid2">
         <div className="panel">
           <h2>QUICK SCAN</h2>
+          <p>Scans critical areas of your system for threats.</p>
 
-          <p>
-            Scans critical areas of your
-            system for threats.
-          </p>
-
-          <div className="progressText">
-            100%
-          </div>
+          <div className="progressText">100%</div>
 
           <div className="progress">
-            <div
-              style={{ width: "100%" }}
-            ></div>
+            <div style={{ width: "100%" }}></div>
           </div>
 
           <div className="scanDone">
-            <div className="check">
-              ✓
-            </div>
+            <div className="check">✓</div>
 
             <div>
-              <h2>
-                SCAN COMPLETED
-              </h2>
-
-              <p>
-                No threats detected.
-                Your system is clean.
-              </p>
+              <h2>SCAN COMPLETED</h2>
+              <p>No threats detected. Your system is clean.</p>
             </div>
           </div>
 
           <div className="buttonRow">
-            <a
-              href="/scan"
-              className="goldBtn"
-            >
+            <button className="goldBtn" onClick={() => router.push("/scan")}>
               ⌕ NEW SCAN
-            </a>
+            </button>
 
-            <a
-              href="/scan"
-              className="darkBtn"
-            >
+            <button className="darkBtn" onClick={() => router.push("/scan")}>
               ♡ FULL SCAN
-            </a>
+            </button>
           </div>
         </div>
 
         <div className="panel">
-          <h2>
-            SYSTEM INFORMATION
-          </h2>
+          <h2>SYSTEM INFORMATION</h2>
 
-          <Info
-            label="USER"
-            value={session?.user?.name}
-          />
-
-          <Info
-            label="EMAIL"
-            value={session?.user?.email}
-          />
-
-          <Info
-            label="PLAN"
-            value="OWNER"
-          />
-
-          <Info
-            label="VERSION"
-            value="1.0.0"
-          />
+          <Info label="USER" value={session?.user?.name || "Guest"} />
+          <Info label="EMAIL" value={session?.user?.email || "Not loaded"} />
+          <Info label="PLAN" value="OWNER" />
+          <Info label="VERSION" value="1.0.0" />
         </div>
       </section>
     </DashboardLayout>
