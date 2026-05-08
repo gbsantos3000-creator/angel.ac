@@ -46,6 +46,23 @@ export default function Home() {
     window.location.href = "/downloads/angel-scanner-v2.exe"
   }
 
+  useEffect(() => {
+    if (!pin) return
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/check-pin?pin=${pin}`)
+        const data = await res.json()
+
+        if (data.success) {
+          setPinStatus(data.status)
+        }
+      } catch {}
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [pin])
+
   if (status === "loading") {
     return (
       <div className="loading">
@@ -213,44 +230,47 @@ export default function Home() {
         <div className="bottomGrid">
           <div className="scanBox">
             <h2>Get your Pin</h2>
-
             <p>Generate a valid download link.</p>
 
-            <div className="scanTop">
-              <span>Scanner status</span>
-              <strong>{generated ? "READY" : "LOCKED"}</strong>
+            <button className="goldBtn full" onClick={generatePin}>
+              ✨ Generate
+            </button>
+
+            <hr />
+
+            <h2>Scanner Details</h2>
+
+            <div className="infoRow">
+              <span>PIN</span>
+              <strong>{pin || "------"}</strong>
             </div>
 
-            <div className="progressBar">
-              <div className={generated ? "progress" : "progress locked"}></div>
+            <div className="infoRow">
+              <span>Status</span>
+              <strong>{generated ? pinStatus : "Not generated"}</strong>
             </div>
 
-            <div className="completed">
-              <div className="check">{generated ? "✓" : "!"}</div>
-
-              <div>
-                <h1>{generated ? "PIN GENERATED" : "WAITING GENERATE"}</h1>
-
-                <p>
-                  {generated
-                    ? "PIN criado. Agora você pode baixar o scanner."
-                    : "Clique em GENERATE PIN para liberar o download."}
-                </p>
-              </div>
+            <div className="infoRow">
+              <span>Threats</span>
+              <strong>{pinStatus === "Used" ? "0" : "-"}</strong>
             </div>
 
-            {generated && (
-              <div className="generatedPin">
-                <span>YOUR PIN</span>
-                <strong>{pin}</strong>
-              </div>
-            )}
+            <div className="infoRow">
+              <span>Injector</span>
+              <strong>None</strong>
+            </div>
+
+            <h3>Detected Files</h3>
+
+            <p className={pinStatus === "Used" ? "cleanText" : "waitingText"}>
+              {pinStatus === "Used"
+                ? "No malicious files found."
+                : generated
+                ? "Waiting for scanner result..."
+                : "Generate a PIN first."}
+            </p>
 
             <div className="buttons">
-              <button className="goldBtn" onClick={generatePin}>
-                ⚡ GENERATE PIN
-              </button>
-
               <button
                 className="darkBtn"
                 onClick={downloadScanner}
@@ -258,18 +278,14 @@ export default function Home() {
               >
                 ⌕ DOWNLOAD SCANNER
               </button>
+
+              <button className="darkBtn" onClick={requestRole}>
+                🛡 REQUEST ROLE
+              </button>
             </div>
 
-            <button
-              className="darkBtn"
-              onClick={requestRole}
-              style={{ width: "100%", marginTop: "18px" }}
-            >
-              🛡 REQUEST ROLE
-            </button>
-
             {roleRequested && (
-              <p style={{ color: "#00ff88", marginTop: "15px" }}>
+              <p className="successText">
                 Request sent to Discord.
               </p>
             )}
@@ -474,83 +490,15 @@ export default function Home() {
           margin-bottom: 15px;
         }
 
-        .scanTop {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 20px;
-          color: #d4af37;
-        }
-
-        .progressBar {
-          width: 100%;
-          height: 12px;
-          border-radius: 20px;
-          background: #111;
-          margin: 10px 0 35px;
-          overflow: hidden;
-        }
-
-        .progress {
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, #8f641d, #f7d77e, #d4af37);
-        }
-
-        .progress.locked {
-          width: 35%;
-          background: #333;
-        }
-
-        .completed {
-          display: flex;
-          align-items: center;
-          gap: 22px;
-        }
-
-        .check {
-          width: 80px;
-          height: 80px;
-          border-radius: 50%;
-          border: 3px solid #d4af37;
-          color: #d4af37;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 48px;
-        }
-
-        .generatedPin {
-          margin-top: 25px;
-          padding: 20px;
-          border-radius: 18px;
-          background: #050505;
-          border: 1px solid rgba(212,175,55,0.35);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        .generatedPin span {
-          color: #8f7440;
-          font-size: 13px;
-          letter-spacing: 2px;
-        }
-
-        .generatedPin strong {
-          color: #f3d27b;
-          font-size: 32px;
-          letter-spacing: 8px;
-        }
-
-        .buttons {
-          display: flex;
-          gap: 20px;
-          margin-top: 30px;
+        .scanBox hr {
+          margin: 22px 0;
+          border: none;
+          height: 2px;
+          background: rgba(255,255,255,0.75);
         }
 
         .goldBtn,
         .darkBtn {
-          flex: 1;
           height: 60px;
           border-radius: 16px;
           font-size: 17px;
@@ -564,6 +512,11 @@ export default function Home() {
           border: none;
         }
 
+        .goldBtn.full {
+          width: 100%;
+          margin-top: 15px;
+        }
+
         .darkBtn {
           background: #111;
           color: white;
@@ -575,14 +528,43 @@ export default function Home() {
           cursor: not-allowed;
         }
 
+        .buttons {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 18px;
+          margin-top: 25px;
+        }
+
         .infoRow {
           display: flex;
           justify-content: space-between;
-          margin-top: 25px;
+          align-items: center;
+          margin-top: 18px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid rgba(255,255,255,0.06);
         }
 
         .infoRow span {
           color: #8f7440;
+        }
+
+        .infoRow strong {
+          color: white;
+        }
+
+        .cleanText {
+          color: #00ff88;
+          margin-top: 15px;
+        }
+
+        .waitingText {
+          color: #d4af37;
+          margin-top: 15px;
+        }
+
+        .successText {
+          color: #00ff88;
+          margin-top: 15px;
         }
 
         @media (max-width: 1100px) {
