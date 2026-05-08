@@ -13,27 +13,27 @@ export function DashboardLayout({ children, active = "Dashboard" }) {
         </a>
 
         <nav className="nav">
-          <a className={active === "Dashboard" ? "navItem active" : "navItem"} href="/dashboard">
+          <a href="/dashboard" className={active === "Dashboard" ? "navItem active" : "navItem"}>
             ▦ Dashboard
           </a>
 
-          <a className={active === "Scan" ? "navItem active" : "navItem"} href="/scan">
+          <a href="/scan" className={active === "Scan" ? "navItem active" : "navItem"}>
             ⌕ Scan
           </a>
 
-          <a className={active === "Logs" ? "navItem active" : "navItem"} href="/logs">
+          <a href="/logs" className={active === "Logs" ? "navItem active" : "navItem"}>
             ☰ Logs
           </a>
 
-          <a className={active === "Quarantine" ? "navItem active" : "navItem"} href="/quarantine">
+          <a href="/quarantine" className={active === "Quarantine" ? "navItem active" : "navItem"}>
             ♡ Quarantine
           </a>
 
-          <a className={active === "Settings" ? "navItem active" : "navItem"} href="/settings">
+          <a href="/settings" className={active === "Settings" ? "navItem active" : "navItem"}>
             ⚙ Settings
           </a>
 
-          <a className={active === "About" ? "navItem active" : "navItem"} href="/about">
+          <a href="/about" className={active === "About" ? "navItem active" : "navItem"}>
             ⓘ About
           </a>
         </nav>
@@ -45,8 +45,8 @@ export function DashboardLayout({ children, active = "Dashboard" }) {
         </div>
 
         <button
-          className="darkBtn"
           type="button"
+          className="darkBtn"
           onClick={() => signOut({ callbackUrl: "/" })}
         >
           Logout
