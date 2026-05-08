@@ -1,78 +1,42 @@
-import NextAuth from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-
-const baseUrl =
-  "https://angel-ac-zocv.vercel.app";
+import NextAuth from "next-auth"
+import DiscordProvider from "next-auth/providers/discord"
 
 export default NextAuth({
   providers: [
     DiscordProvider({
-      clientId:
-        process.env.DISCORD_CLIENT_ID,
-
-      clientSecret:
-        process.env
-          .DISCORD_CLIENT_SECRET,
-
-      authorization: {
-        params: {
-          scope: "identify email",
-
-          redirect_uri: `${baseUrl}/api/auth/callback/discord`,
-        },
-      },
+      clientId: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET,
     }),
   ],
 
-  secret:
-    process.env.NEXTAUTH_SECRET,
-
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
   },
 
-  pages: {
-    signIn: "/",
-    error: "/",
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60,
   },
 
   callbacks: {
-    async jwt({
-      token,
-      profile,
-    }) {
-      if (profile) {
-        token.username =
-          profile.username;
+    async jwt({ token, account, profile }) {
+      if (account && profile) {
+        token.discordId = profile.id
+        token.username = profile.username
+        token.globalName = profile.global_name
       }
 
-      return token;
+      return token
     },
 
-    async session({
-      session,
-      token,
-    }) {
-      if (session.user) {
-        session.user.id =
-          token.sub;
+    async session({ session, token }) {
+      session.user.id = token.discordId
+      session.user.username = token.username
+      session.user.globalName = token.globalName
 
-        session.user.name =
-          token.username ||
-          session.user.name;
-
-        session.user.plan =
-          "OWNER";
-
-        session.user.license =
-          "LIFETIME";
-      }
-
-      return session;
-    },
-
-    async redirect() {
-      return `${baseUrl}/dashboard`;
+      return session
     },
   },
-});
+
+  secret: process.env.NEXTAUTH_SECRET,
+})
