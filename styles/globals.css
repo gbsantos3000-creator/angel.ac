@@ -313,3 +313,35 @@ a {
     font-size: 42px;
   }
 }
+button,
+a,
+.navItem,
+.goldBtn,
+.darkBtn,
+.brand {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 9999;
+}
+
+.sidebar {
+  position: relative;
+  z-index: 9999;
+}
+
+.main {
+  position: relative;
+  z-index: 1;
+}
+
+.navItem {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+}
+
+.goldBtn,
+.darkBtn {
+  font: inherit;
+}
