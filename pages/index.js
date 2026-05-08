@@ -1,9 +1,20 @@
+import { useState } from "react"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from "next/router"
+import ScannerDashboard from "../src/components/ScannerDashboard"
 
 export default function Home() {
   const { data: session, status } = useSession()
   const router = useRouter()
+
+  const [pin, setPin] = useState("")
+  const [generated, setGenerated] = useState(false)
+
+  const generatePin = () => {
+    const code = Math.floor(100000 + Math.random() * 900000).toString()
+    setPin(code)
+    setGenerated(true)
+  }
 
   const downloadScanner = () => {
     window.location.href = "/downloads/angel-scanner.exe"
@@ -110,7 +121,6 @@ export default function Home() {
 
   return (
     <div className="dashboard">
-
       <aside className="sidebar">
         <div>
           <div className="sideLogo">
@@ -121,26 +131,11 @@ export default function Home() {
 
         <div className="menu">
           <button className="active">▦ Dashboard</button>
-
-          <button onClick={() => router.push("/scan")}>
-            ⌕ Scan
-          </button>
-
-          <button onClick={() => router.push("/logs")}>
-            ▤ Logs
-          </button>
-
-          <button onClick={() => router.push("/quarantine")}>
-            🛡 Quarantine
-          </button>
-
-          <button onClick={() => router.push("/settings")}>
-            ⚙ Settings
-          </button>
-
-          <button onClick={() => router.push("/about")}>
-            ⓘ About
-          </button>
+          <button onClick={() => router.push("/scan")}>⌕ Scan</button>
+          <button onClick={() => router.push("/logs")}>▤ Logs</button>
+          <button onClick={() => router.push("/quarantine")}>🛡 Quarantine</button>
+          <button onClick={() => router.push("/settings")}>⚙ Settings</button>
+          <button onClick={() => router.push("/about")}>ⓘ About</button>
         </div>
 
         <div className="protectionBox">
@@ -151,7 +146,6 @@ export default function Home() {
       </aside>
 
       <main className="mainContent">
-
         <section className="hero">
           <div className="heroText">
             <h1>ANGEL A.C</h1>
@@ -165,7 +159,6 @@ export default function Home() {
         </section>
 
         <div className="cards">
-
           <div className="card">
             <h3>STATUS</h3>
             <h2>PROTECTED</h2>
@@ -189,66 +182,68 @@ export default function Home() {
             <h2>01:24:57</h2>
             <p>Scanning in real-time</p>
           </div>
-
         </div>
 
         <div className="bottomGrid">
-
           <div className="scanBox">
             <h2>QUICK SCAN</h2>
-
-            <p>
-              Scans critical areas of your system for threats.
-            </p>
+            <p>Generate a PIN igual estilo Napse e baixe o scanner ANGEL A.C.</p>
 
             <div className="scanTop">
-              <span></span>
-              <strong>100%</strong>
+              <span>Scanner status</span>
+              <strong>{generated ? "READY" : "LOCKED"}</strong>
             </div>
 
             <div className="progressBar">
-              <div className="progress"></div>
+              <div className={generated ? "progress" : "progress locked"}></div>
             </div>
 
             <div className="completed">
-              <div className="check">✓</div>
+              <div className="check">{generated ? "✓" : "!"}</div>
 
               <div>
-                <h1>SCAN COMPLETED</h1>
+                <h1>{generated ? "PIN GENERATED" : "WAITING GENERATE"}</h1>
                 <p>
-                  No threats detected. Your system is clean.
+                  {generated
+                    ? "PIN criado. Agora você pode baixar o scanner."
+                    : "Clique em GENERATE PIN para liberar o download."}
                 </p>
               </div>
             </div>
 
-            <div className="buttons">
+            {generated && (
+              <div className="generatedPin">
+                <span>YOUR PIN</span>
+                <strong>{pin}</strong>
+              </div>
+            )}
 
-              <button
-                className="goldBtn"
-                onClick={downloadScanner}
-              >
-                ⌕ DOWNLOAD SCANNER
+            <div className="buttons">
+              <button className="goldBtn" onClick={generatePin}>
+                ⚡ GENERATE PIN
               </button>
 
               <button
                 className="darkBtn"
                 onClick={downloadScanner}
+                disabled={!generated}
               >
-                🛡 FULL SCAN
+                ⌕ DOWNLOAD SCANNER
               </button>
-
             </div>
           </div>
 
           <div className="infoBox">
-
             <h2>SYSTEM INFORMATION</h2>
 
             <div className="infoRow">
               <span>USER</span>
-              <strong>
-                {session.user?.name || "Discord User"}
-              </strong>
+              <strong>{session.user?.name || "Discord User"}</strong>
+            </div>
+
+            <div className="infoRow">
+              <span>PIN</span>
+              <strong>{generated ? pin : "NOT GENERATED"}</strong>
             </div>
 
             <div className="infoRow">
@@ -257,29 +252,18 @@ export default function Home() {
             </div>
 
             <div className="infoRow">
-              <span>CPU</span>
-              <strong>Intel Core i5-10400F</strong>
-            </div>
-
-            <div className="infoRow">
-              <span>GPU</span>
-              <strong>NVIDIA GTX 1650</strong>
-            </div>
-
-            <div className="infoRow">
-              <span>RAM</span>
-              <strong>16 GB</strong>
-            </div>
-
-            <div className="infoRow">
               <span>VERSION</span>
               <strong>1.0.0</strong>
             </div>
 
+            <div className="infoRow">
+              <span>SCANNER</span>
+              <strong>angel-scanner.exe</strong>
+            </div>
           </div>
-
         </div>
 
+        <ScannerDashboard />
       </main>
 
       <style jsx>{`
@@ -384,6 +368,7 @@ export default function Home() {
           color: #f3d27b;
           font-size: 86px;
           letter-spacing: 8px;
+          text-shadow: 0 0 35px rgba(212,175,55,0.35);
         }
 
         .heroText p {
@@ -451,6 +436,7 @@ export default function Home() {
           display: flex;
           justify-content: space-between;
           margin-top: 20px;
+          color: #d4af37;
         }
 
         .progressBar {
@@ -466,6 +452,11 @@ export default function Home() {
           width: 100%;
           height: 100%;
           background: linear-gradient(90deg, #8f641d, #f7d77e, #d4af37);
+        }
+
+        .progress.locked {
+          width: 35%;
+          background: #333;
         }
 
         .completed {
@@ -484,6 +475,29 @@ export default function Home() {
           justify-content: center;
           align-items: center;
           font-size: 48px;
+        }
+
+        .generatedPin {
+          margin-top: 25px;
+          padding: 20px;
+          border-radius: 18px;
+          background: #050505;
+          border: 1px solid rgba(212,175,55,0.35);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .generatedPin span {
+          color: #8f7440;
+          font-size: 13px;
+          letter-spacing: 2px;
+        }
+
+        .generatedPin strong {
+          color: #f3d27b;
+          font-size: 32px;
+          letter-spacing: 8px;
         }
 
         .buttons {
@@ -514,10 +528,37 @@ export default function Home() {
           border: 1px solid rgba(212,175,55,0.18);
         }
 
+        .darkBtn:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
         .infoRow {
           display: flex;
           justify-content: space-between;
           margin-top: 25px;
+        }
+
+        .infoRow span {
+          color: #8f7440;
+        }
+
+        @media (max-width: 1100px) {
+          .cards {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .bottomGrid {
+            grid-template-columns: 1fr;
+          }
+
+          .heroText h1 {
+            font-size: 55px;
+          }
+
+          .sidebar {
+            width: 230px;
+          }
         }
       `}</style>
     </div>
