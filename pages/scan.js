@@ -3,14 +3,9 @@ import { DashboardLayout } from "../components/DashboardLayout";
 
 export default function Scan() {
   const [progress, setProgress] = useState(0);
-  const [scanStatus, setScanStatus] =
-    useState("Ready to scan");
-
-  const [generatedLink, setGeneratedLink] =
-    useState("");
-
-  const [selectedResult, setSelectedResult] =
-    useState(null);
+  const [scanStatus, setScanStatus] = useState("Ready to scan");
+  const [generatedLink, setGeneratedLink] = useState("");
+  const [selectedResult, setSelectedResult] = useState(null);
 
   const [pins, setPins] = useState([
     {
@@ -20,7 +15,6 @@ export default function Scan() {
       game: "FiveM",
       detection: "Clean",
       name: "Generated",
-      link: "",
       details: {
         status: "Clean",
         threats: 0,
@@ -29,24 +23,6 @@ export default function Scan() {
         files: [],
       },
     },
-
-    {
-      customer: "d3d11dllexec",
-      pin: "613747",
-      used: "New",
-      game: "FiveM",
-      detection: "Clean",
-      name: "Generated",
-      link: "",
-      details: {
-        status: "Clean",
-        threats: 0,
-        injector: "None",
-        executor: "None",
-        files: [],
-      },
-    },
-
     {
       customer: "d3d11dllexec",
       pin: "527577",
@@ -54,90 +30,37 @@ export default function Scan() {
       game: "FiveM",
       detection: "Bannable",
       name: "Empty",
-      link: "",
       details: {
         status: "CHEAT DETECTED",
         threats: 4,
         injector: "redENGINE",
         executor: "Lua Executor",
-        files: [
-          "d3d11.dll",
-          "modmenu.exe",
-          "executor.dll",
-          "redengine.dll",
-        ],
-      },
-    },
-
-    {
-      customer: "d3d11dllexec",
-      pin: "999395",
-      used: "Used",
-      game: "FiveM",
-      detection: "Bannable",
-      name: "Empty",
-      link: "",
-      details: {
-        status: "CHEAT DETECTED",
-        threats: 3,
-        injector: "HX Cheats",
-        executor: "Silent Injector",
-        files: [
-          "hx.dll",
-          "injector.exe",
-          "modmenu.dll",
-        ],
+        files: ["d3d11.dll", "modmenu.exe", "executor.dll"],
       },
     },
   ]);
 
-  function startQuickScan() {
+  function startScan(type) {
     setProgress(0);
-    setScanStatus("Quick scan running...");
+    setScanStatus(`${type} scan running...`);
 
     let value = 0;
 
     const interval = setInterval(() => {
-      value += 10;
-
-      setProgress(value);
+      value += type === "Full" ? 5 : 10;
 
       if (value >= 100) {
+        value = 100;
         clearInterval(interval);
-
-        setScanStatus(
-          "Quick scan completed successfully."
-        );
+        setScanStatus(`${type} scan completed successfully.`);
       }
+
+      setProgress(value);
     }, 200);
   }
 
-  function startFullScan() {
-    setProgress(0);
-    setScanStatus("Full scan running...");
-
-    let value = 0;
-
-    const interval = setInterval(() => {
-      value += 5;
-
-      setProgress(value);
-
-      if (value >= 100) {
-        clearInterval(interval);
-
-        setScanStatus(
-          "Full scan completed successfully."
-        );
-      }
-    }, 300);
-  }
-
   function generatePin() {
-    const pin = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
-
+    const pin = Math.floor(100000 + Math.random() * 900000).toString();
     const link = `${window.location.origin}/api/download?pin=${pin}`;
 
     const newPin = {
@@ -147,8 +70,6 @@ export default function Scan() {
       game: "FiveM",
       detection: "Clean",
       name: "Generated",
-      link,
-
       details: {
         status: "Clean",
         threats: 0,
@@ -159,157 +80,137 @@ export default function Scan() {
     };
 
     setPins((old) => [newPin, ...old]);
-
     setGeneratedLink(link);
   }
 
   return (
-    <DashboardLayout>
-      <div className="pageHeader">
-        <h1>SCAN CENTER</h1>
+    <DashboardLayout active="Scan">
+      <div className="scanPage">
+        <div className="scanTop">
+          <div>
+            <h1>SCAN CENTER</h1>
+            <p>Run quick and full scans.</p>
+          </div>
 
-        <p>Run quick and full scans.</p>
-      </div>
-
-      <div className="scanCard">
-        <h2>{scanStatus}</h2>
-
-        <div className="scanBar">
-          <div
-            className="scanProgress"
-            style={{
-              width: `${progress}%`,
-            }}
-          />
-        </div>
-
-        <div className="scanPercent">
-          {progress}%
-        </div>
-
-        <div className="scanButtons">
-          <button
-            className="goldBtn"
-            onClick={startQuickScan}
-          >
-            Quick Scan
-          </button>
-
-          <button
-            className="darkBtn"
-            onClick={startFullScan}
-          >
-            Full Scan
-          </button>
-        </div>
-      </div>
-
-      <div className="pinGrid">
-        <div className="pinTableWrap">
-          <table className="pinTable">
-            <thead>
-              <tr>
-                <th>Customer</th>
-                <th>PIN</th>
-                <th>Used</th>
-                <th>Result</th>
-                <th>Game</th>
-                <th>Detection</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {pins.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.customer}</td>
-
-                  <td>{item.pin}</td>
-
-                  <td
-                    className={
-                      item.used === "New"
-                        ? "statusClean"
-                        : "statusBad"
-                    }
-                  >
-                    {item.used}
-                  </td>
-
-                  <td>
-                    <button
-                      className="viewBtn"
-                      onClick={() =>
-                        setSelectedResult(item)
-                      }
-                    >
-                      ⊞ View
-                    </button>
-                  </td>
-
-                  <td>{item.game}</td>
-
-                  <td>
-                    <span
-                      className={
-                        item.detection === "Clean"
-                          ? "detectClean"
-                          : "detectBad"
-                      }
-                    >
-                      {item.detection}
-                    </span>
-                  </td>
-
-                  <td>{item.name} ⚙️</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div className="tableFooter">
-            <button className="darkBtn">
-              Prev
+          <div className="scanButtons">
+            <button type="button" className="goldBtn" onClick={() => startScan("Quick")}>
+              Quick Scan
             </button>
 
-            <span>
-              Showing 1 - {pins.length} of{" "}
-              {pins.length}
-            </span>
-
-            <button className="darkBtn">
-              Next
+            <button type="button" className="darkBtn" onClick={() => startScan("Full")}>
+              Full Scan
             </button>
           </div>
         </div>
 
-        <div className="sideActions">
-          <div className="actionCard">
-            <h3>Get your Pin</h3>
+        <div className="progressBox">
+          <div className="progressText">
+            <span>{scanStatus}</span>
+            <strong>{progress}%</strong>
+          </div>
 
-            <p>
-              Generate a valid download PIN.
-            </p>
+          <div className="progress">
+            <div style={{ width: `${progress}%` }} />
+          </div>
+        </div>
 
-            <button
-              className="goldBtn fullWidth"
-              onClick={generatePin}
-            >
+        <div className="scannerGrid">
+          <div className="tableBox">
+            <table className="napseTable">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>PIN</th>
+                  <th>Used</th>
+                  <th>Result</th>
+                  <th>Game</th>
+                  <th>Detection</th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {pins.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.customer}</td>
+                    <td>{item.pin}</td>
+
+                    <td className={item.used === "New" ? "safeText" : "dangerText"}>
+                      {item.used}
+                    </td>
+
+                    <td>
+                      <button type="button" className="viewBtn" onClick={() => setSelectedResult(item)}>
+                        ▣ View
+                      </button>
+                    </td>
+
+                    <td className="goldText">{item.game}</td>
+
+                    <td>
+                      <span className={item.detection === "Clean" ? "cleanBadge" : "banBadge"}>
+                        {item.detection}
+                      </span>
+                    </td>
+
+                    <td>{item.name} ⚙</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="detailsPanel">
+            <h2>Get your Pin</h2>
+            <p>Generate a valid download link.</p>
+
+            <button type="button" className="goldBtn fullWidth" onClick={generatePin}>
               ✨ Generate
             </button>
-          </div>
 
-          <div className="actionCard">
-            <h3>Search Pins</h3>
+            <hr />
 
-            <input
-              placeholder="Enter PIN or Name"
-              className="searchInput"
-            />
+            {!selectedResult ? (
+              <div className="emptyDetails">Click View to see scanner details</div>
+            ) : (
+              <>
+                <h2>Scanner Details</h2>
 
-            <button className="purpleBtn fullWidth">
-              Search
-            </button>
+                <div className="detailRow">
+                  <span>PIN</span>
+                  <strong>{selectedResult.pin}</strong>
+                </div>
+
+                <div className="detailRow">
+                  <span>Status</span>
+                  <strong>{selectedResult.details.status}</strong>
+                </div>
+
+                <div className="detailRow">
+                  <span>Threats</span>
+                  <strong>{selectedResult.details.threats}</strong>
+                </div>
+
+                <div className="detailRow">
+                  <span>Injector</span>
+                  <strong>{selectedResult.details.injector}</strong>
+                </div>
+
+                <div className="filesBox">
+                  <h3>Detected Files</h3>
+
+                  {selectedResult.details.files.length === 0 ? (
+                    <p className="safeText">No malicious files found.</p>
+                  ) : (
+                    selectedResult.details.files.map((file, i) => (
+                      <div className="fileItem" key={i}>
+                        {file}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -318,120 +219,21 @@ export default function Scan() {
         <div className="downloadModal">
           <div className="downloadBox">
             <h2>Valid Download Link</h2>
+            <p>Copy this link and send it to the user.</p>
 
-            <p>
-              Copy this link and send it to the
-              user.
-            </p>
-
-            <input
-              value={generatedLink}
-              readOnly
-            />
+            <input value={generatedLink} readOnly />
 
             <button
+              type="button"
               className="goldBtn fullWidth"
-              onClick={() =>
-                navigator.clipboard.writeText(
-                  generatedLink
-                )
-              }
+              onClick={() => navigator.clipboard.writeText(generatedLink)}
             >
               Copy Link
             </button>
 
-            <button
-              className="darkBtn fullWidth"
-              onClick={() =>
-                setGeneratedLink("")
-              }
-            >
+            <button type="button" className="darkBtn fullWidth" onClick={() => setGeneratedLink("")}>
               Close
             </button>
-          </div>
-        </div>
-      )}
-
-      {selectedResult && (
-        <div className="detailsModal">
-          <div className="detailsBox">
-            <div className="detailsHeader">
-              <h2>Scanner Result</h2>
-
-              <button
-                onClick={() =>
-                  setSelectedResult(null)
-                }
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="detailsContent">
-              <div className="detailRow">
-                <span>Status</span>
-
-                <strong>
-                  {
-                    selectedResult.details
-                      .status
-                  }
-                </strong>
-              </div>
-
-              <div className="detailRow">
-                <span>Threats</span>
-
-                <strong>
-                  {
-                    selectedResult.details
-                      .threats
-                  }
-                </strong>
-              </div>
-
-              <div className="detailRow">
-                <span>Injector</span>
-
-                <strong>
-                  {
-                    selectedResult.details
-                      .injector
-                  }
-                </strong>
-              </div>
-
-              <div className="detailRow">
-                <span>Executor</span>
-
-                <strong>
-                  {
-                    selectedResult.details
-                      .executor
-                  }
-                </strong>
-              </div>
-
-              <div className="detectedFiles">
-                <h3>Detected Files</h3>
-
-                {selectedResult.details.files
-                  .length === 0 ? (
-                  <p>No malicious files found.</p>
-                ) : (
-                  selectedResult.details.files.map(
-                    (file, index) => (
-                      <div
-                        key={index}
-                        className="fileItem"
-                      >
-                        {file}
-                      </div>
-                    )
-                  )
-                )}
-              </div>
-            </div>
           </div>
         </div>
       )}
