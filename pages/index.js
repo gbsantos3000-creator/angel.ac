@@ -102,9 +102,14 @@ export default function Home() {
               })
             }
           >
-            Login with Discord
-          </button>
-        </div>
+           <button
+  onClick={() => {
+    window.location.href =
+      "https://angel-ac-zocv.vercel.app/api/auth/signin/discord?callbackUrl=https%3A%2F%2Fangel-ac-zocv.vercel.app"
+  }}
+>
+  Login with Discord
+</button>
 
         <style jsx>{`
           .loginPage {
