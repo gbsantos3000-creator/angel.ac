@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/router"
 import ScannerDashboard from "../src/components/ScannerDashboard"
 
@@ -96,20 +96,14 @@ export default function Home() {
           <p>Advanced Anti-Cheat Platform</p>
 
           <button
-            onClick={() =>
-              signIn("discord", {
-                callbackUrl: "https://angel-ac-zocv.vercel.app",
-              })
-            }
+            onClick={() => {
+              window.location.href =
+                "https://angel-ac-zocv.vercel.app/api/auth/signin/discord?callbackUrl=https%3A%2F%2Fangel-ac-zocv.vercel.app"
+            }}
           >
-           <button
-  onClick={() => {
-    window.location.href =
-      "https://angel-ac-zocv.vercel.app/api/auth/signin/discord?callbackUrl=https%3A%2F%2Fangel-ac-zocv.vercel.app"
-  }}
->
-  Login with Discord
-</button>
+            Login with Discord
+          </button>
+        </div>
 
         <style jsx>{`
           .loginPage {
@@ -162,8 +156,8 @@ export default function Home() {
             height: 55px;
             border: none;
             border-radius: 14px;
-            background: #d4af37;
-            color: #000;
+            background: #5865F2;
+            color: white;
             font-size: 17px;
             font-weight: bold;
             cursor: pointer;
@@ -335,268 +329,6 @@ export default function Home() {
 
         <ScannerDashboard />
       </main>
-
-      <style jsx>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: Arial;
-        }
-
-        .dashboard {
-          width: 100%;
-          min-height: 100vh;
-          background: #050505;
-          display: flex;
-          color: white;
-        }
-
-        .sidebar {
-          width: 280px;
-          background: #080808;
-          border-right: 1px solid rgba(212,175,55,0.18);
-          padding: 35px 25px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        }
-
-        .sideLogo h1 {
-          color: #d4af37;
-          font-size: 32px;
-        }
-
-        .sideLogo p {
-          color: #d4af37;
-          letter-spacing: 5px;
-          font-size: 12px;
-        }
-
-        .menu {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-          margin-top: 45px;
-        }
-
-        .menu button {
-          height: 58px;
-          border-radius: 14px;
-          border: 1px solid rgba(212,175,55,0.15);
-          background: #111;
-          color: white;
-          cursor: pointer;
-          font-size: 16px;
-        }
-
-        .menu button:hover,
-        .active {
-          background: rgba(212,175,55,0.2);
-        }
-
-        .protectionBox {
-          padding: 20px;
-          border-radius: 18px;
-          background: #111;
-          border: 1px solid rgba(212,175,55,0.2);
-        }
-
-        .protectionBox h3 {
-          color: #b99038;
-        }
-
-        .protectionBox span {
-          color: #d4af37;
-          font-size: 24px;
-          font-weight: bold;
-        }
-
-        .mainContent {
-          flex: 1;
-          padding: 28px;
-        }
-
-        .hero {
-          width: 100%;
-          height: 320px;
-          border-radius: 30px;
-          border: 1px solid rgba(212,175,55,0.18);
-          background: #070707;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: relative;
-          margin-bottom: 30px;
-        }
-
-        .heroText {
-          text-align: center;
-        }
-
-        .heroText h1 {
-          color: #f3d27b;
-          font-size: 86px;
-          letter-spacing: 8px;
-          text-shadow: 0 0 35px rgba(212,175,55,0.35);
-        }
-
-        .heroText p {
-          color: #eee;
-          letter-spacing: 7px;
-        }
-
-        .heroText span {
-          display: block;
-          color: #d4af37;
-          margin-top: 20px;
-        }
-
-        .logout {
-          position: absolute;
-          top: 22px;
-          right: 22px;
-          background: transparent;
-          color: #d4af37;
-          border: 1px solid rgba(212,175,55,0.35);
-          border-radius: 12px;
-          padding: 10px 18px;
-          cursor: pointer;
-        }
-
-        .cards {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
-          margin-bottom: 25px;
-        }
-
-        .card,
-        .scanBox,
-        .infoBox {
-          background: #0b0b0b;
-          border: 1px solid rgba(212,175,55,0.16);
-          border-radius: 22px;
-          padding: 25px;
-        }
-
-        .card h3 {
-          color: #8f7440;
-          margin-bottom: 15px;
-        }
-
-        .card p {
-          color: #d4af37;
-          font-size: 13px;
-        }
-
-        .bottomGrid {
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 25px;
-        }
-
-        .scanBox h2,
-        .infoBox h2 {
-          color: #d4af37;
-          margin-bottom: 15px;
-        }
-
-        .scanBox hr {
-          margin: 22px 0;
-          border: none;
-          height: 2px;
-          background: rgba(255,255,255,0.75);
-        }
-
-        .goldBtn,
-        .darkBtn {
-          height: 60px;
-          border-radius: 16px;
-          font-size: 17px;
-          font-weight: bold;
-          cursor: pointer;
-        }
-
-        .goldBtn {
-          background: linear-gradient(135deg, #d4af37, #705018);
-          color: white;
-          border: none;
-        }
-
-        .goldBtn.full {
-          width: 100%;
-          margin-top: 15px;
-        }
-
-        .darkBtn {
-          background: #111;
-          color: white;
-          border: 1px solid rgba(212,175,55,0.18);
-        }
-
-        .darkBtn:disabled {
-          opacity: 0.4;
-          cursor: not-allowed;
-        }
-
-        .buttons {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 18px;
-          margin-top: 25px;
-        }
-
-        .infoRow {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-top: 18px;
-          padding-bottom: 12px;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .infoRow span {
-          color: #8f7440;
-        }
-
-        .infoRow strong {
-          color: white;
-        }
-
-        .cleanText {
-          color: #00ff88;
-          margin-top: 15px;
-        }
-
-        .waitingText {
-          color: #d4af37;
-          margin-top: 15px;
-        }
-
-        .successText {
-          color: #00ff88;
-          margin-top: 15px;
-        }
-
-        @media (max-width: 1100px) {
-          .cards {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .bottomGrid {
-            grid-template-columns: 1fr;
-          }
-
-          .heroText h1 {
-            font-size: 55px;
-          }
-
-          .sidebar {
-            width: 230px;
-          }
-        }
-      `}</style>
     </div>
   )
 }
