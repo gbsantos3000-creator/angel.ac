@@ -95,9 +95,15 @@ export default function Home() {
           <h1>ANGEL A.C</h1>
           <p>Advanced Anti-Cheat Platform</p>
 
-          <button onClick={() => signIn("discord", {
-  callbackUrl: "https://angel-ac-zocv.vercel.app",
-})
+          <button
+  onClick={() =>
+    signIn("discord", {
+      callbackUrl: "https://angel-ac-zocv.vercel.app",
+    })
+  }
+>
+  Login with Discord
+</button>
           </button>
         </div>
 
