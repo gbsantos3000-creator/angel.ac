@@ -96,14 +96,13 @@ export default function Home() {
           <p>Advanced Anti-Cheat Platform</p>
 
           <button
-  onClick={() =>
-    signIn("discord", {
-      callbackUrl: "https://angel-ac-zocv.vercel.app",
-    })
-  }
->
-  Login with Discord
-</button>
+            onClick={() =>
+              signIn("discord", {
+                callbackUrl: "https://angel-ac-zocv.vercel.app",
+              })
+            }
+          >
+            Login with Discord
           </button>
         </div>
 
@@ -237,6 +236,7 @@ export default function Home() {
         <div className="bottomGrid">
           <div className="scanBox">
             <h2>Get your Pin</h2>
+
             <p>Generate a valid download link.</p>
 
             <button className="goldBtn full" onClick={generatePin}>
